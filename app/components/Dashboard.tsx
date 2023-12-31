@@ -1,6 +1,6 @@
 // pages/index.js
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { unified } from "unified";
 import stream from "unified-stream";
 import remarkParse from "remark-parse";
