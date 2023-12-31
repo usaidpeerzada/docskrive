@@ -17,7 +17,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   message,
   setMessage,
 }) => {
-  const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
+  const apiKeyFromLocalStorage =
+    typeof window !== "undefined" && localStorage.getItem("apiKey");
+  const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage || "");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showKey, setShowKey] = useState(false);
   function handleSave() {

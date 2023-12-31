@@ -15,14 +15,18 @@ type OnChange = (
   state?: ContextStore
 ) => void;
 export default function MarkdownEditor({ initialData }: MarkdownProps) {
-  const [value, setValue] = React.useState(initialData.content);
+  const [value, setValue] = React.useState(initialData?.content);
   const onChange = React.useCallback<OnChange>((val) => {
     setValue(val || "");
   }, []);
   return (
     <div className="container">
       <div data-color-mode="dark">
-        <MDEditor height={200} value={value} onChange={onChange} />
+        <MDEditor
+          height={600}
+          value={value || initialData?.content}
+          onChange={onChange}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 // pages/index.js
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { unified } from "unified";
 import stream from "unified-stream";
 import remarkParse from "remark-parse";
@@ -25,16 +25,17 @@ export default function Dashboard({
 }: DashboardProps): React.ReactNode {
   const [githubRepo, setGithubRepo] = useState("");
   const [textCode, setTextCode] = useState("");
-  const [apiKey, setApikey] = useState(localStorage.getItem("apiKey") || "");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-
-  const closeSettings = () => {
-    setIsSettingsOpen(false);
-  };
-
+  let apiKey: any;
+  if (typeof window !== "undefined") {
+    apiKey =
+      localStorage &&
+      localStorage.getItem("apiKey") !== "" &&
+      localStorage.getItem("apiKey");
+  }
   const generateDocument = async () => {
     if (!apiKey) {
       setIsSettingsOpen(true);
@@ -82,6 +83,7 @@ export default function Dashboard({
     control: (provided: any) => ({
       ...provided,
       backgroundColor:
+        typeof window !== "undefined" &&
         localStorage.getItem("darkMode") === "true"
           ? "rgb(13 148 136)"
           : "rgb(55 65 81)",
@@ -111,7 +113,6 @@ export default function Dashboard({
   //   .processSync(generatedDocument);
   return (
     <div className="min-h-screen p-6 flex text-white font-sans">
-      {/* Right side (input fields) */}
       <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
         <div className="flex">
           <h1 className="text-3xl font-bold">📄 DocSkrive</h1>
@@ -137,7 +138,7 @@ export default function Dashboard({
         </div>
         <SettingsModal
           isOpen={isSettingsOpen}
-          onClose={closeSettings}
+          onClose={() => setIsSettingsOpen(false)}
           message={message}
           setMessage={setMessage}
         />
@@ -175,12 +176,9 @@ export default function Dashboard({
           Generate Document
         </button>
       </div>
-
-      {/* Left side (generated document) */}
       <div className="flex-1 pl-6">
         <GeneratedDocument content={generatedDocument?.document} />
       </div>
-      {/* Settings Modal */}
     </div>
   );
 }
