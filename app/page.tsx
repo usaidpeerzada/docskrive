@@ -1,4 +1,3 @@
-// pages/index.js
 "use client";
 import Link from "next/link";
 import Dashboard from "./components/Dashboard";
