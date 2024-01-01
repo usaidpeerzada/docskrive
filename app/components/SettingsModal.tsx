@@ -1,5 +1,4 @@
-// components/SettingsModal.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose, IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import ToggleSwitch from "./ToggleSwitch";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -9,6 +8,8 @@ interface SettingsModalProps {
   onClose: () => void;
   message: string;
   setMessage: (arg: string) => void;
+  darkMode: boolean;
+  setDarkMode: (arg: boolean) => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -16,13 +17,50 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   message,
   setMessage,
+  darkMode,
+  setDarkMode,
 }) => {
   const apiKeyFromLocalStorage =
     typeof window !== "undefined" && localStorage.getItem("apiKey");
   const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage || "");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showKey, setShowKey] = useState(false);
-  function handleSave() {
+
+  // change color of md editor here:
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      document.getElementsByClassName("wmde-markdown wmde-markdown-color")
+        .length
+    ) {
+      if (darkMode) {
+        document.getElementsByClassName(
+          "wmde-markdown wmde-markdown-color"
+        )[0].style.backgroundColor = "rgb(17, 24, 39)";
+      } else {
+        document.getElementsByClassName(
+          "wmde-markdown wmde-markdown-color"
+        )[0].style.backgroundColor = "white";
+      }
+    }
+  }, [darkMode]);
+
+  // in app
+  React.useEffect(() => {
+    const mode = darkMode ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.setAttribute("data-color-mode", mode);
+  }, [darkMode]);
+
+  // reload or mount
+  React.useEffect(() => {
+    const getDarkMode = localStorage.getItem("darkMode") === "true";
+    const mode = getDarkMode ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", getDarkMode);
+    document.documentElement.setAttribute("data-color-mode", mode);
+  }, []);
+
+  function handleSave(): void {
     if (!apiKey) {
       setMessage("Please enter an API key.");
       return;
@@ -35,6 +73,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     localStorage.removeItem("apiKey");
     onClose();
   }
+
+  function handleToggleSubmit(mode: boolean) {
+    setDarkMode(mode);
+  }
+
   return (
     <div
       className={`fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 ${
@@ -76,20 +119,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               onChange={(e) => setApiKey(e.target.value)}
             />
             <button
-              className="absolute top-1/2 right-4 transform -translate-y-1/2"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-100 dark:bg-gray-700  right-2 p-2"
               onClick={() => setShowKey(!showKey)}
             >
               {showKey ? (
-                <IoEyeOutline className="w-6 h-6 text-gray-500" />
+                <IoEyeOutline className="w-6 h-6 text-gray-900" />
               ) : (
-                <IoEyeOffOutline className="w-6 h-6 text-gray-500" />
+                <IoEyeOffOutline className="w-6 h-6 text-gray-900" />
               )}
             </button>
           </div>
         </div>
         <label className="block text-sm font-medium mb-2">Theme: </label>
         <div className="flex items-center mb-4 border border-gray-900 rounded">
-          <ToggleSwitch isChecked={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <ToggleSwitch
+            isChecked={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
+            onSubmit={handleToggleSubmit}
+          />
         </div>
         <button
           className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 dark:text-white py-2 px-4 mr-2 rounded-full transition-all duration-300 ease-in-out"
