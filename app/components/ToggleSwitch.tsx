@@ -1,10 +1,12 @@
 import React from "react";
 
-const ToggleSwitch = ({ isChecked, setIsDarkMode }: any) => {
+const ToggleSwitch = ({ isChecked, setIsDarkMode, onSubmit }: any) => {
   const handleCheckboxChange = () => {
     setIsDarkMode((prevMode: any) => !prevMode);
-    document.documentElement.classList.toggle("dark", !isChecked);
-    localStorage.setItem("darkMode", `${isChecked}`);
+    localStorage.setItem("darkMode", `${!isChecked}`);
+    const getDarkMode = localStorage.getItem("darkMode");
+    const bool = getDarkMode === "true" ? true : false;
+    onSubmit(bool);
   };
   return (
     <>
