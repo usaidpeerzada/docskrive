@@ -153,7 +153,7 @@ export default function Dashboard({
         </div>
         <FileUpload handleFileChange={handleFileChange} />
         <div className="mb-4 mt-4">
-          <label className="block text-sm font-medium mb-2">Text Code:</label>
+          <label className="block text-sm font-medium mb-2">Code:</label>
           <textarea
             className="p-2 w-full h-64 bg-gray-100 dark:bg-gray-700 border border-gray-600 rounded focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
             placeholder="Enter code"
