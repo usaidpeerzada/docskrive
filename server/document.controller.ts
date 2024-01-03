@@ -1,54 +1,48 @@
-// server/controllers/documentController.ts
 import { Request, Response } from "express";
-import axios from "axios";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-const generateDocument = async (req: Request, res: Response): Promise<void> => {
-  try {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    const { githubRepo, textCode, apiKey } = req.body;
 
-    if (!githubRepo && !textCode) {
+async function generateDocument(req: Request, res: Response): Promise<void> {
+  try {
+    const { githubUrl, textCode, apiKey } = req.body;
+    console.log("apikey here: ", apiKey);
+    if (!githubUrl && !textCode) {
       res
         .status(400)
         .json({ error: "Provide either GitHub repository or text code" });
       return;
     }
 
-    const prompt = githubRepo
-      ? await fetchCodeFromGitHub(githubRepo)
+    const prompt = githubUrl
+      ? await fetchCodeFromGitHubUrl(githubUrl)
       : textCode;
 
     if (!prompt) {
       res.status(400).json({ error: "Failed to fetch code" });
       return;
     }
-
     const generatedDocument = await getRespFromModel(prompt, apiKey);
-
     res.json({ document: generatedDocument });
+    // res.send(prompt);
   } catch (error) {
     console.error("Error generating document:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
+}
 
-const fetchCodeFromGitHub = async (
-  githubRepo: string
-): Promise<string | null> => {
+async function fetchCodeFromGitHubUrl(githubUrl: string): Promise<any | null> {
   try {
-    const githubResponse = await axios.get(
-      `https://api.github.com/repos/${githubRepo}/contents`
-    );
-    const codeFiles = await Promise.all(
-      githubResponse.data.map((file: any) => axios.get(file.download_url))
-    );
-    const code = codeFiles.map((response: any) => response.data).join("\n");
-    return code;
+    const resp = await fetch(githubUrl)
+      .then((res) => res.json())
+      .then((res) => res)
+      .catch((err) => console.log("github_error:", err));
+    const arrOfCode = resp?.payload?.blob?.rawLines;
+    const resultString = arrOfCode.filter(Boolean).join("\n");
+    return resultString;
   } catch (error) {
     console.error("Error fetching code from GitHub:", error);
     return null;
   }
-};
+}
 
 async function getRespFromModel(
   prompt: string,
@@ -71,7 +65,6 @@ async function getRespFromModel(
     );
     const response = await result.response;
     const text = response.text();
-    console.log("resp ", text);
     return text;
   } catch (error) {
     console.error("Error generating document:", error);
