@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { OpenAI } from "openai";
 
 async function generateDocument(req: Request, res: Response): Promise<void> {
   try {
-    const { githubUrl, textCode, apiKey } = req.body;
+    const { githubUrl, textCode, apiKey, selectedModel } = req.body;
     console.log("apikey here: ", apiKey);
     if (!githubUrl && !textCode) {
       res
@@ -20,7 +21,12 @@ async function generateDocument(req: Request, res: Response): Promise<void> {
       res.status(400).json({ error: "Failed to fetch code" });
       return;
     }
-    const generatedDocument = await getRespFromModel(prompt, apiKey);
+
+    const generatedDocument = await getRespFromModel(
+      prompt,
+      apiKey,
+      selectedModel
+    );
     res.json({ document: generatedDocument });
     // res.send(prompt);
   } catch (error) {
@@ -44,9 +50,46 @@ async function fetchCodeFromGitHubUrl(githubUrl: string): Promise<any | null> {
   }
 }
 
-async function getRespFromModel(
+async function getRespFromModel(prompt: string, apiKey: string, model: string) {
+  if (model === "gemini-pro") {
+    return getRespFromGoogle(prompt, apiKey, model);
+  } else {
+    return getRespFromOpenAI(prompt, apiKey, model);
+  }
+}
+
+async function getRespFromOpenAI(
   prompt: string,
-  apiKey: string
+  apiKey: string,
+  model: string
+): Promise<string | undefined> {
+  try {
+    const openai = new OpenAI({
+      apiKey: apiKey,
+    });
+    const response = await openai.chat.completions.create({
+      model: model,
+      messages: [
+        {
+          role: "user",
+          content: `Generate technical documentation in markdown for this code: ${prompt}`,
+        },
+      ],
+      temperature: 0.2,
+      // max_tokens: 2000,
+    });
+
+    return response?.choices[0]?.message?.content?.trim();
+  } catch (error) {
+    console.error("Error generating document:", error);
+    throw new Error("Failed to generate document");
+  }
+}
+
+async function getRespFromGoogle(
+  prompt: string,
+  apiKey: string,
+  aiModel: string
 ): Promise<string> {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -57,11 +100,11 @@ async function getRespFromModel(
       topK: 16,
     };
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: aiModel,
       generationConfig,
     });
     const result = await model.generateContent(
-      `Give me technical document for this code in markdown: ${prompt}`
+      `Generate technical documentation in markdown for this code: ${prompt}`
     );
     const response = await result.response;
     const text = response.text();
