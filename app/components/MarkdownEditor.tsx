@@ -29,7 +29,7 @@ export default function MarkdownEditor({
         <div className="wmde-markdown"></div>
         <MDEditor
           style={darkMode ? { backgroundColor: "rgb(17 24 39)" } : {}}
-          height={600}
+          height={640}
           value={value || initialData?.content}
           onChange={onChange}
           previewOptions={{
