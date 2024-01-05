@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GeneratedDocument from "./GeneratedDocument";
 import SettingsModal from "./SettingsModal";
 import Select from "react-select";
@@ -25,6 +25,13 @@ export default function Dashboard({
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+
+  // fix for warning related to select dropdown:
+  // Must be deleted once
+  // https://github.com/JedWatson/react-select/issues/5459 is fixed.
+  const id = Date.now().toString();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
 
   let apiKey: string | any;
   if (typeof window !== "undefined") {
@@ -62,7 +69,8 @@ export default function Dashboard({
   }
 
   const modelOptions = [
-    { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
+    { value: "gpt-3.5-turbo-1106", label: "GPT-3.5 Turbo" },
+    { value: "gpt-4", label: "GPT-4" },
     { value: "gemini-pro", label: "Gemini Pro" },
   ];
 
@@ -102,22 +110,25 @@ export default function Dashboard({
   }
   const areInputsEmpty = githubUrl.length === 0 && textCode.length === 0;
   return (
-    <div className="min-h-screen p-6 flex flex-wrap text-white font-sans">
+    <div className="min-h-screen pr-6 pl-6 pb-6 pt-3 flex flex-wrap text-white font-sans">
       <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
         <div className="md:flex lg:flex xl:flex">
           <h1 className="text-3xl font-bold">📄 DocSkrive</h1>
           <div className="absolute right-20">
-            <Select
-              options={modelOptions}
-              value={modelOptions.find(
-                (option) => option.value === selectedModel
-              )}
-              onChange={(option) => setSelectedModel(option?.value || null)}
-              styles={customStyles}
-              theme={customTheme}
-              isSearchable={false}
-              defaultValue={modelOptions[0]}
-            />
+            {isMounted ? (
+              <Select
+                id={id}
+                options={modelOptions}
+                value={modelOptions.find(
+                  (option) => option.value === selectedModel
+                )}
+                onChange={(option) => setSelectedModel(option?.value || null)}
+                styles={customStyles}
+                theme={customTheme}
+                isSearchable={false}
+                defaultValue={modelOptions[0]}
+              />
+            ) : null}
           </div>
           <button
             className="absolute right-4 mr-2 bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 hover:border-teal-800 border border-teal-600 dark:border-gray-600 rounded p-2"
@@ -156,7 +167,7 @@ export default function Dashboard({
           <label className="block text-sm font-medium mb-2">Code:</label>
           <textarea
             className="p-2 w-full h-64 bg-gray-100 dark:bg-gray-700 border border-gray-600 rounded focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
-            placeholder="Enter code"
+            placeholder="Paste your code here..."
             value={textCode}
             onChange={(e) => setTextCode(e.target.value)}
             rows={500}
@@ -164,7 +175,7 @@ export default function Dashboard({
         </div>
 
         <button
-          className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-4 rounded-full transition-all duration-300 ease-in-out"
+          className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-6 rounded-full transition-all duration-300 ease-in-out"
           onClick={generateDocument}
           disabled={isLoading || areInputsEmpty}
         >
