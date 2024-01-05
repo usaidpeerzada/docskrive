@@ -10,7 +10,13 @@ export default function Page() {
       <Dashboard initialData={sampleInitialData} />
       <p className="text-center text-white dark:text-gray-600 pb-6">
         <span>made by </span>
-        <Link href="https://www.usaid.dev">usaid.dev</Link>
+        <Link href="https://www.usaid.dev" className="hover:underline">
+          usaid.dev
+        </Link>{" "}
+        |{" "}
+        <Link href="https://usaid.dev/contact" className="hover:underline">
+          contact
+        </Link>
       </p>
     </div>
   );
