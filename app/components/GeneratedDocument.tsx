@@ -30,21 +30,21 @@ const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
         {content ? (
           <>
             <button onClick={handleDownloadClick}>
-              <IoDownloadOutline className="w-6 h-6 absolute right-12 top-12" />
+              <IoDownloadOutline className="w-6 h-6 absolute right-12 top-11" />
             </button>
             <EmailShareButton
               url={""}
               subject="Check out this Markdown document!"
               body={content ? content : ""}
             >
-              <IoMailOutline className="w-5 h-5 relative right-8 bottom-2" />
+              <IoMailOutline className="w-5 h-5 relative right-8" />
             </EmailShareButton>
           </>
         ) : (
           ""
         )}
       </div>
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };
