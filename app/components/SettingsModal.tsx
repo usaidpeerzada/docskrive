@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { IoClose, IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import ToggleSwitch from "./ToggleSwitch";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -71,6 +71,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
   function removeApiKey() {
     localStorage.removeItem("apiKey");
+    setApiKey("");
     onClose();
   }
 
@@ -119,7 +120,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               onChange={(e) => setApiKey(e.target.value)}
             />
             <button
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-100 dark:bg-gray-700  right-2 p-2"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-100 dark:bg-gray-700  right-1 p-2"
               onClick={() => setShowKey(!showKey)}
             >
               {showKey ? (
