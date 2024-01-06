@@ -6,7 +6,6 @@ import "@uiw/react-markdown-preview/markdown.css";
 import rehypeSanitize from "rehype-sanitize"; //preventing xss
 interface MarkdownProps {
   initialData: { content: string };
-  darkMode: boolean;
 }
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 type OnChange = (
@@ -15,11 +14,11 @@ type OnChange = (
   state?: ContextStore
 ) => void;
 
-export default function MarkdownEditor({
-  darkMode,
-  initialData,
-}: MarkdownProps) {
+export default function MarkdownEditor({ initialData }: MarkdownProps) {
   const [value, setValue] = React.useState(initialData?.content);
+  const darkMode =
+    typeof window !== "undefined" &&
+    localStorage.getItem("darkMode") === "true";
   const onChange = React.useCallback<OnChange>((val) => {
     setValue(val || "");
   }, []);
@@ -27,9 +26,10 @@ export default function MarkdownEditor({
     <div className="container">
       <div data-color-mode="dark">
         <div className="wmde-markdown"></div>
+        <div className="wmde-markdown-color"></div>
         <MDEditor
           style={darkMode ? { backgroundColor: "rgb(17 24 39)" } : {}}
-          height={640}
+          height={720}
           value={value || initialData?.content}
           onChange={onChange}
           previewOptions={{
