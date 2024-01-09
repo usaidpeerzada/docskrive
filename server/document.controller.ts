@@ -4,18 +4,22 @@ import { OpenAI } from "openai";
 
 async function generateDocument(req: Request, res: Response): Promise<void> {
   try {
-    const { githubUrl, textCode, apiKey, selectedModel } = req.body;
-    console.log("apikey here: ", apiKey);
-    if (!githubUrl && !textCode) {
+    const { url, githubUrl, textCode, apiKey, selectedModel } = req.body;
+    if (!url && !githubUrl && !textCode) {
       res
         .status(400)
         .json({ error: "Provide either GitHub repository or text code" });
       return;
     }
-
-    const prompt = githubUrl
-      ? await fetchCodeFromGitHubUrl(githubUrl)
-      : textCode;
+    let prompt = "";
+    if (url) {
+      prompt = `You are a great tool that generates a document in markdown that helps people get to know about a website, what it does, does it have APIs for developers, list those APIs, shows similar websites and links to it: ${url}`;
+    } else {
+      const data = githubUrl
+        ? await fetchCodeFromGitHubUrl(githubUrl)
+        : textCode;
+      prompt = `Generate technical documentation in markdown for this code: ${data}`;
+    }
 
     if (!prompt) {
       res.status(400).json({ error: "Failed to fetch code" });
@@ -32,6 +36,7 @@ async function generateDocument(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error("Error generating document:", error);
     res.status(500).json({ error: "Internal Server Error" });
+    return;
   }
 }
 
@@ -43,6 +48,7 @@ async function fetchCodeFromGitHubUrl(githubUrl: string): Promise<any | null> {
       .catch((err) => console.log("github_error:", err));
     const arrOfCode = resp?.payload?.blob?.rawLines;
     const resultString = arrOfCode.filter(Boolean).join("\n");
+    console.log(">>>", resultString);
     return resultString;
   } catch (error) {
     console.error("Error fetching code from GitHub:", error);
@@ -72,7 +78,7 @@ async function getRespFromOpenAI(
       messages: [
         {
           role: "user",
-          content: `Generate technical documentation in markdown for this code: ${prompt}`,
+          content: prompt,
         },
       ],
       temperature: 0.2,
@@ -103,15 +109,13 @@ async function getRespFromGoogle(
       model: aiModel,
       generationConfig,
     });
-    const result = await model.generateContent(
-      `Generate technical documentation in markdown for this code: ${prompt}`
-    );
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     return text;
   } catch (error) {
     console.error("Error generating document:", error);
-    throw new Error("Failed to generate document");
+    return "Failed to generate document";
   }
 }
 
