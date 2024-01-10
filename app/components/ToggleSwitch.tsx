@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 const ToggleSwitch = ({ setIsDarkMode, onSubmit }: any) => {
-  const initialDarkMode = () => localStorage.getItem("darkMode") === "true";
+  const initialDarkMode = () =>
+    typeof window !== "undefined" &&
+    localStorage.getItem("darkMode") === "true";
   const [isChecked, setIsChecked] = useState(initialDarkMode);
   useEffect(() => {
     // Update the dark mode preference in localStorage whenever it changes
-    localStorage.setItem("darkMode", `${isChecked}`);
+    typeof window !== "undefined" &&
+      localStorage.setItem("darkMode", `${isChecked}`);
     onSubmit(isChecked);
   }, [isChecked, onSubmit]);
 
