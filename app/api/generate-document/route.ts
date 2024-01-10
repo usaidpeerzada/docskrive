@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { OpenAI } from "openai";
 
-export async function POST(req: Request, res: NextResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const data = await req.json();
     const { url, githubUrl, textCode, apiKey, selectedModel }: any = data;
