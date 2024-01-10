@@ -51,7 +51,7 @@ export default function Dashboard({
     }
     try {
       setIsLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      const response = await fetch(`/api/generate-document`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
