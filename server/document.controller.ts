@@ -32,7 +32,6 @@ async function generateDocument(req: Request, res: Response): Promise<void> {
       selectedModel
     );
     res.json({ document: generatedDocument });
-    // res.send(prompt);
   } catch (error) {
     console.error("Error generating document:", error);
     res.status(500).json({ error: "Internal Server Error" });
