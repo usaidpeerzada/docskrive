@@ -127,7 +127,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               onChange={(e) => setApiKey(e.target.value)}
             />
             <button
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-100 dark:bg-gray-700  right-1 p-2"
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-100 dark:bg-gray-700  right-1 p-2"
               onClick={() => setShowKey(!showKey)}
             >
               {showKey ? (
