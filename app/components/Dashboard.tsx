@@ -127,7 +127,7 @@ export default function Dashboard({
         <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
           <div className="md:flex lg:flex xl:flex">
             <Link href="/" className="text-3xl font-bold">
-              <IoArrowBack className="text-teal-600 dark:bg-gray-700" />
+              <IoArrowBack className="text-teal-600" />
             </Link>{" "}
             <div className="absolute right-20">
               {isMounted ? (
