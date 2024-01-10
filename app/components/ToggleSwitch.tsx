@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const ToggleSwitch = ({ isChecked, setIsDarkMode, onSubmit }: any) => {
+const ToggleSwitch = ({ setIsDarkMode, onSubmit }: any) => {
+  const initialDarkMode = () => localStorage.getItem("darkMode") === "true";
+  const [isChecked, setIsChecked] = useState(initialDarkMode);
+  useEffect(() => {
+    // Update the dark mode preference in localStorage whenever it changes
+    localStorage.setItem("darkMode", `${isChecked}`);
+    onSubmit(isChecked);
+  }, [isChecked, onSubmit]);
+
   const handleCheckboxChange = () => {
-    setIsDarkMode((prevMode: any) => !prevMode);
-    localStorage.setItem("darkMode", `${!isChecked}`);
-    const getDarkMode = localStorage.getItem("darkMode");
-    const bool = getDarkMode === "true" ? true : false;
-    onSubmit(bool);
+    setIsChecked((prevMode) => !prevMode);
   };
   return (
     <>
