@@ -28,21 +28,28 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
   // change color of md editor here:
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      document.getElementsByClassName("wmde-markdown wmde-markdown-color")
-        .length
-    ) {
-      if (darkMode) {
-        document.getElementsByClassName(
-          "wmde-markdown wmde-markdown-color"
-        )[0].style.backgroundColor = "rgb(17, 24, 39)";
-      } else {
-        document.getElementsByClassName(
-          "wmde-markdown wmde-markdown-color"
-        )[0].style.backgroundColor = "white";
+    const applyColors = () => {
+      const markdownElements = document.getElementsByClassName(
+        "wmde-markdown wmde-markdown-color"
+      ) as HTMLCollectionOf<HTMLElement>;
+      const dark = localStorage.getItem("darkMode") === "true";
+      if (markdownElements.length > 0) {
+        const markdownElement = markdownElements[0];
+        if (dark) {
+          markdownElement.style.backgroundColor = "rgb(17, 24, 39)";
+        } else {
+          markdownElement.style.backgroundColor = "white";
+        }
       }
-    }
+    };
+    applyColors();
+    const handleWindowLoad = () => {
+      applyColors();
+    };
+    window.addEventListener("load", handleWindowLoad);
+    return () => {
+      window.removeEventListener("load", handleWindowLoad);
+    };
   }, [darkMode]);
 
   // in app
