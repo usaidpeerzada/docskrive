@@ -24,7 +24,7 @@ export default function Dashboard({
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(
-    "gemini-pro"
+    "gpt-3.5-turbo-1106"
   );
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
