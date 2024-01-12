@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const data = githubUrl
         ? await fetchCodeFromGitHubUrl(githubUrl)
         : textCode;
-      prompt = `Generate technical documentation in markdown for this code: ${data}`;
+      prompt = `Wrire a comprehensive technical document in markdown for this code: ${data}`;
     }
 
     if (!prompt) {
