@@ -123,7 +123,7 @@ export default function Dashboard({
       transition={{ duration: 2.5, ease: [0.6, -0.05, 0.01, 0.99] }}
       exit={{ x: "100%", opacity: 0 }}
     >
-      <div className="min-h-screen pr-6 pl-6 pb-6 pt-3 flex flex-wrap text-white font-sans">
+      <div className="min-h-screen md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-sans">
         <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
           <div className="md:flex lg:flex xl:flex">
             <Link href="/" className="text-3xl font-bold">
