@@ -2,14 +2,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Footer from "./Footer";
 
 const LandingPage = () => {
   return (
     <>
       <div className="min-h-screen flex justify-center items-center bg-teal-600">
         <div
-          className="bg-gray-200 h-80  drop-shadow-xl text-white p-4 rounded-lg"
-          style={{ width: "550px" }}
+          className="bg-gray-200 h-80 w-96 md:w-1/3 drop-shadow-xl text-white p-4 rounded-lg"
+          //   style={{ width: "550px" }}
         >
           <div className="flex mb-2">
             <div className="h-3 w-3 rounded-full bg-red-500 mr-2"></div>
@@ -48,23 +49,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-
-      <footer className="mt-auto p-4 text-center bg-gray-200">
-        <p className="text-sm text-gray-600">
-          <span>made by </span>
-          <Link href="https://www.usaid.dev" className="hover:underline">
-            usaid.dev
-          </Link>{" "}
-          |{" "}
-          <Link href="https://usaid.dev/contact" className="hover:underline">
-            contact
-          </Link>{" "}
-          |{" "}
-          <Link href="/faq" className="hover:underline">
-            FAQ
-          </Link>
-        </p>
-      </footer>
+      <Footer />
     </>
   );
 };
