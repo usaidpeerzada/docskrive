@@ -22,7 +22,6 @@ const FileUpload = ({ handleFileChange }: FileUploadProps) => {
       const result = event?.target?.result as string | null;
       const base64String = result?.split(",")[1] || "";
       const decodedText = atob(base64String);
-      //   console.log(decodedText);
       handleFileChange(decodedText);
     };
     reader.readAsDataURL(file);

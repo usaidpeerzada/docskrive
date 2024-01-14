@@ -46,7 +46,6 @@ async function fetchCodeFromGitHubUrl(
       .catch((err) => console.log("github_error:", err));
     const arrOfCode = resp?.payload?.blob?.rawLines;
     const resultString = arrOfCode.filter(Boolean).join("\n");
-    console.log(">>>", resultString);
     return resultString;
   } catch (error) {
     console.error("Error fetching code from GitHub:", error);
