@@ -24,7 +24,7 @@ export default function MarkdownEditor({ initialData }: MarkdownProps) {
   }, []);
   React.useEffect(() => {
     setValue(initialData?.content);
-  }, [initialData]);
+  }, [initialData?.content]);
   return (
     <div className="container">
       <div data-color-mode="dark">
