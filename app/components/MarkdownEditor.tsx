@@ -22,6 +22,9 @@ export default function MarkdownEditor({ initialData }: MarkdownProps) {
   const onChange = React.useCallback<OnChange>((val) => {
     setValue(val || "");
   }, []);
+  React.useEffect(() => {
+    setValue(initialData?.content);
+  }, [initialData]);
   return (
     <div className="container">
       <div data-color-mode="dark">
@@ -30,7 +33,7 @@ export default function MarkdownEditor({ initialData }: MarkdownProps) {
         <MDEditor
           style={darkMode ? { backgroundColor: "rgb(17 24 39)" } : {}}
           height={720}
-          value={value || initialData?.content}
+          value={value}
           onChange={onChange}
           previewOptions={{
             rehypePlugins: [[rehypeSanitize]],
