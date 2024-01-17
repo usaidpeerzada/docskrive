@@ -49,6 +49,13 @@ export default function Dashboard({
       setIsSettingsOpen(true);
       setMessage("Please enter an API key");
     }
+    const values = [url, githubUrl, textCode];
+    const filledValues = values.filter((value) => value !== "");
+
+    if (filledValues.length > 1) {
+      alert("Please fill only one field at a time.");
+      return; // Exit the function early
+    }
     try {
       setIsLoading(true);
       const response = await fetch(`/api/generate-document`, {
