@@ -10,7 +10,7 @@ import FileUpload from "./FileUpload";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { IoArrowBack } from "react-icons/io5";
-
+import { checkIfUrlIsValid } from "../../utils/utils";
 interface DashboardProps {
   initialData: { document: string };
 }
@@ -54,7 +54,14 @@ export default function Dashboard({
 
     if (filledValues.length > 1) {
       alert("Please fill only one field at a time.");
-      return; // Exit the function early
+      return;
+    }
+    const urlString = url || githubUrl;
+    if (urlString) {
+      if (!checkIfUrlIsValid(urlString)) {
+        alert("Please enter a valid URL.");
+        return;
+      }
     }
     try {
       setIsLoading(true);
