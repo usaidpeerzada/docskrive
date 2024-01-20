@@ -16,6 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          src="https://us.umami.is/script.js"
+          data-website-id="0904d73b-c98f-4fef-952c-437fe0ce60e6"
+        ></script>
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
