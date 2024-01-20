@@ -14,13 +14,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log(process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL);
   return (
     <html lang="en">
       <head>
         <script
           defer
-          src="https://us.umami.is/script.js"
-          data-website-id="0904d73b-c98f-4fef-952c-437fe0ce60e6"
+          src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+          data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
         ></script>
       </head>
       <body className={inter.className}>{children}</body>
