@@ -15,6 +15,7 @@ interface DashboardProps {
   initialData: { document: string };
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
 export default function Dashboard({
   initialData,
 }: DashboardProps): React.ReactNode {
@@ -65,7 +66,7 @@ export default function Dashboard({
     }
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/generate-document`, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
