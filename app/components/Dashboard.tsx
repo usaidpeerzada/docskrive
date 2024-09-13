@@ -28,6 +28,7 @@ export default function Dashboard({
     "gpt-3.5-turbo-1106"
   );
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -66,7 +67,7 @@ export default function Dashboard({
     }
     try {
       setIsLoading(true);
-      const response = await fetch(apiUrl, {
+      await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,9 +79,17 @@ export default function Dashboard({
           apiKey,
           selectedModel,
         }),
-      });
-      const data = await response.json();
-      setGeneratedDocument(data);
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.message) {
+            setError(res.message);
+          } else {
+            setGeneratedDocument(res);
+            setError("");
+          }
+        })
+        .catch((err) => console.log("err ", err));
     } catch (error) {
       console.error("Error generating document:", error);
     } finally {
@@ -213,7 +222,7 @@ export default function Dashboard({
               rows={500}
             />
           </div>
-
+          {error ? <p className="pb-4 text-red-500">{error}</p> : null}
           <button
             className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-6 rounded-full transition-all duration-300 ease-in-out"
             onClick={generateDocument}
