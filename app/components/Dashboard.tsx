@@ -73,7 +73,7 @@ export default function Dashboard({
     }
     try {
       setIsLoading(true);
-      await fetch(apiUrl, {
+      await fetch(`${apiUrl}/generate-document`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
