@@ -192,7 +192,7 @@ export default function Dashboard({
             setDarkMode={setDarkMode}
             isTranslateCodePage={false}
           />
-          <div className="mb-4 mt-4">
+          {/* <div className="mb-4 mt-4">
             <label className="block text-sm font-medium mb-2">URL:</label>
             <input
               type="text"
@@ -201,12 +201,12 @@ export default function Dashboard({
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
-          </div>
-          <div className="mb-2 flex items-center">
+          </div> */}
+          {/* <div className="mb-2 flex items-center">
             <hr className="flex-1 border-t border-gray-600" />
             <span className="mx-4 text-sm text-gray-500">or</span>
             <hr className="flex-1 border-t border-gray-600" />
-          </div>
+          </div> */}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">
               GitHub file URL:
