@@ -10,9 +10,14 @@ import FileUpload from "./FileUpload";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { IoArrowBack } from "react-icons/io5";
-import { checkIfUrlIsValid } from "../../utils/utils";
+import { checkIfUrlIsValid, modelOptions } from "../../utils/utils";
 interface DashboardProps {
   initialData: { document: string };
+}
+
+export interface SelectedModel {
+  key: string;
+  value: string;
 }
 
 const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
@@ -24,9 +29,10 @@ export default function Dashboard({
   const [textCode, setTextCode] = useState("");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<string | null>(
-    "gpt-3.5-turbo-1106"
-  );
+  const [selectedModel, setSelectedModel] = useState<SelectedModel>({
+    key: "open-ai",
+    value: "gpt-3.5-turbo-1106",
+  });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +55,7 @@ export default function Dashboard({
   async function generateDocument(): Promise<void> {
     if (!apiKey) {
       setIsSettingsOpen(true);
-      setMessage("Please enter an API key");
+      setMessage("Please add an API key in settings.");
     }
     const values = [url, githubUrl, textCode];
     const filledValues = values.filter((value) => value !== "");
@@ -96,12 +102,6 @@ export default function Dashboard({
       setIsLoading(false);
     }
   }
-
-  const modelOptions = [
-    { value: "gpt-3.5-turbo-1106", label: "GPT-3.5 Turbo" },
-    { value: "gpt-4", label: "GPT-4" },
-    { value: "gemini-pro", label: "Gemini Pro" },
-  ];
 
   const customTheme = (theme: any) => ({
     ...theme,
@@ -159,9 +159,16 @@ export default function Dashboard({
                   id={id}
                   options={modelOptions}
                   value={modelOptions.find(
-                    (option) => option.value === selectedModel
+                    (option) => option.value === selectedModel.value
                   )}
-                  onChange={(option) => setSelectedModel(option?.value || null)}
+                  onChange={(option) =>
+                    setSelectedModel(
+                      {
+                        key: option?.key as string,
+                        value: option?.value as string,
+                      } || null
+                    )
+                  }
                   styles={customStyles}
                   theme={customTheme}
                   isSearchable={false}
@@ -183,6 +190,7 @@ export default function Dashboard({
             setMessage={setMessage}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
+            isTranslateCodePage={false}
           />
           <div className="mb-4 mt-4">
             <label className="block text-sm font-medium mb-2">URL:</label>
@@ -228,12 +236,20 @@ export default function Dashboard({
             onClick={generateDocument}
             disabled={isLoading || areInputsEmpty}
           >
-            {isLoading ? <LoadingSpinner /> : "Generate"}
+            {isLoading ? (
+              <LoadingSpinner loadingMsg="Generating" />
+            ) : (
+              "Generate"
+            )}
           </button>
         </div>
         <div className="flex-1 mt-10 md:mt-0 lg:mt-0 xl:mt-0 md:pl-6 lg:pl-6">
-          <GeneratedDocument content={generatedDocument?.document}>
+          <GeneratedDocument
+            isTranslationPage={false}
+            content={generatedDocument?.document}
+          >
             <MarkdownEditor
+              isTranslationPage={false}
               initialData={{ content: generatedDocument?.document }}
             />
           </GeneratedDocument>

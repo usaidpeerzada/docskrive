@@ -3,11 +3,13 @@ import { IoDownloadOutline, IoMailOutline } from "react-icons/io5";
 import { EmailShareButton } from "react-share";
 
 interface GeneratedDocumentProps {
+  isTranslationPage: boolean;
   content: string | null;
   children: React.ReactNode;
 }
 
 const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
+  isTranslationPage,
   content,
   children,
 }) => {
@@ -27,7 +29,9 @@ const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
     <div className="flex flex-col bg-light-dashboard text-light-primary dark:text-gray-500 dark:bg-gray-800 rounded-lg shadow-lg p-6 h-full">
       <div className="flex justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-4">Markdown:</h2>
+          {isTranslationPage ? null : (
+            <h2 className="text-2xl font-bold mb-4">Markdown:</h2>
+          )}
         </div>
         <div>
           {content ? (

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function LoadingSpinner() {
+export default function LoadingSpinner({ loadingMsg }: { loadingMsg: string }) {
   return (
     <div role="status" className="flex">
       <svg
@@ -19,7 +19,7 @@ export default function LoadingSpinner() {
           fill="currentFill"
         />
       </svg>
-      <span className="ml-2 mt-1">Generating</span>
+      <span className="ml-2 mt-1">{loadingMsg}</span>
     </div>
   );
 }

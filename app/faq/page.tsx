@@ -1,21 +1,13 @@
+"use client";
 import React from "react";
 import Footer from "../components/Footer";
 import Link from "next/link";
+import Navbar from "../components/NavBar";
 
-export default function page() {
+export default function Page() {
   return (
     <>
-      <div className="mt-auto p-4 text-center bg-gray-200">
-        <p className="text-sm text-gray-600">
-          <Link href="/" className="hover:underline">
-            Home
-          </Link>{" "}
-          |{" "}
-          <Link href="/dashboard" className="hover:underline">
-            Dashboard
-          </Link>{" "}
-        </p>
-      </div>
+      <Navbar onSettingsClick={() => {}} showSettingsButton={false} />
       <div className="min-h-screen flex justify-center items-center bg-teal-600">
         <div className=" px-5 mt-10 mb-10 bg-gray-200 border rounded w-96 md:w-1/2">
           <div className="flex flex-col items-center">

@@ -2,6 +2,9 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { IoClose, IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import ToggleSwitch from "./ToggleSwitch";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { modelOptions } from "@/utils/utils";
+import { SelectedModel } from "./Dashboard";
+import ReactSelect from "react-select";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -10,6 +13,7 @@ interface SettingsModalProps {
   setMessage: (arg: string) => void;
   darkMode: boolean;
   setDarkMode: (arg: boolean) => void;
+  isTranslateCodePage: boolean;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -19,13 +23,36 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   setMessage,
   darkMode,
   setDarkMode,
+  isTranslateCodePage,
 }) => {
   const apiKeyFromLocalStorage =
     typeof window !== "undefined" && localStorage.getItem("apiKey");
   const [apiKey, setApiKey] = useState(apiKeyFromLocalStorage || "");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showKey, setShowKey] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<SelectedModel>({
+    key: "open-ai",
+    value: "gpt-3.5-turbo-1106",
+  });
+  const id = Date.now().toString();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedModel = localStorage.getItem("selectedModel");
+      if (storedModel) {
+        try {
+          setSelectedModel(JSON.parse(storedModel));
+        } catch (error) {
+          console.error(
+            "Error parsing selected model from localStorage",
+            error
+          );
+        }
+      }
+    }
+  }, []);
   // change color of md editor here:
   useEffect(() => {
     const applyColors = () => {
@@ -138,14 +165,48 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </button>
           </div>
         </div>
-        <label className="block text-sm font-medium mb-2">Theme: </label>
-        <div className="flex items-center mb-4 border border-gray-900 rounded">
-          <ToggleSwitch
-            isChecked={isDarkMode}
-            setIsDarkMode={setIsDarkMode}
-            onSubmit={handleToggleSubmit}
-          />
-        </div>
+        {isMounted && isTranslateCodePage ? (
+          <div className="mb-6">
+            <ReactSelect
+              id={id}
+              options={modelOptions}
+              value={modelOptions.find(
+                (option) => option.value === selectedModel.value
+              )}
+              onChange={(option) => {
+                setSelectedModel(
+                  {
+                    key: option?.key as string,
+                    value: option?.value as string,
+                  } || null
+                );
+                localStorage.setItem(
+                  "selectedModel",
+                  JSON.stringify({
+                    key: option?.key as string,
+                    value: option?.value as string,
+                  })
+                );
+              }}
+              // styles={customStyles}
+              // theme={customTheme}
+              isSearchable={false}
+              defaultValue={modelOptions[0]}
+            />
+          </div>
+        ) : null}
+        {isTranslateCodePage ? null : (
+          <>
+            <label className="block text-sm font-medium mb-2">Theme: </label>
+            <div className="flex items-center mb-4 border border-gray-900 rounded">
+              <ToggleSwitch
+                isChecked={isDarkMode}
+                setIsDarkMode={setIsDarkMode}
+                onSubmit={handleToggleSubmit}
+              />
+            </div>
+          </>
+        )}
         <button
           className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 dark:text-white py-2 px-4 mr-2 rounded-full transition-all duration-300 ease-in-out"
           onClick={handleSave}
