@@ -17,7 +17,7 @@ export default function Navbar({
   };
 
   return (
-    <nav className="w-full bg-teal-700 text-white p-4 flex items-center justify-between">
+    <nav className="w-full bg-teal-700 text-white p-4 flex items-center justify-between font-poppins">
       <button className="md:hidden text-white text-2xl" onClick={toggleMenu}>
         {isMenuOpen ? <HiX /> : <HiMenu />}
       </button>

@@ -7,7 +7,7 @@ import Footer from "./Footer";
 const LandingPage = () => {
   return (
     <>
-      <div className="min-h-screen flex justify-center items-center bg-teal-600">
+      <div className="min-h-screen flex justify-center items-center bg-teal-600 font-poppins">
         <div
           className="bg-gray-200 h-80 w-96 md:w-1/3 drop-shadow-xl text-white p-4 rounded-lg"
           //   style={{ width: "550px" }}

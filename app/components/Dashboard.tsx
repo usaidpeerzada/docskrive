@@ -24,7 +24,7 @@ const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
 export default function Dashboard({
   initialData,
 }: DashboardProps): React.ReactNode {
-  const [url, setUrl] = useState("");
+  // const [url, setUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [textCode, setTextCode] = useState("");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
@@ -57,14 +57,14 @@ export default function Dashboard({
       setIsSettingsOpen(true);
       setMessage("Please add an API key in settings.");
     }
-    const values = [url, githubUrl, textCode];
+    const values = [githubUrl, textCode];
     const filledValues = values.filter((value) => value !== "");
 
     if (filledValues.length > 1) {
       alert("Please fill only one field at a time.");
       return;
     }
-    const urlString = url || githubUrl;
+    const urlString = githubUrl;
     if (urlString) {
       if (!checkIfUrlIsValid(urlString)) {
         alert("Please enter a valid URL.");
@@ -79,7 +79,6 @@ export default function Dashboard({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          url,
           githubUrl,
           textCode,
           apiKey,
@@ -137,8 +136,7 @@ export default function Dashboard({
   function handleFileChange(text: string) {
     setTextCode(text);
   }
-  const areInputsEmpty =
-    githubUrl.length === 0 && textCode.length === 0 && url.length === 0;
+  const areInputsEmpty = githubUrl.length === 0 && textCode.length === 0;
   return (
     <motion.main
       className="main__container"
@@ -147,7 +145,7 @@ export default function Dashboard({
       transition={{ duration: 2.5, ease: [0.6, -0.05, 0.01, 0.99] }}
       exit={{ x: "100%", opacity: 0 }}
     >
-      <div className="min-h-screen md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-sans">
+      <div className="min-h-screen md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-poppins">
         <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
           <div className="md:flex lg:flex xl:flex">
             <Link href="/" className="text-3xl font-bold">
@@ -207,7 +205,7 @@ export default function Dashboard({
             <span className="mx-4 text-sm text-gray-500">or</span>
             <hr className="flex-1 border-t border-gray-600" />
           </div> */}
-          <div className="mb-4">
+          <div className="mt-4 mb-4">
             <label className="block text-sm font-medium mb-2">
               GitHub file URL:
             </label>

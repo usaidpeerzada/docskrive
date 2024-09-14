@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto p-4 text-center bg-gray-200">
+    <footer className="mt-auto p-4 text-center bg-gray-200 font-poppins">
       <p className="text-sm text-gray-600">
         <span>made by </span>
         <Link href="https://www.usaid.dev" className="hover:underline">

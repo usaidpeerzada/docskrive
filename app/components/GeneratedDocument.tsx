@@ -34,7 +34,7 @@ const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
           )}
         </div>
         <div>
-          {content ? (
+          {content && !isTranslationPage ? (
             <>
               <button onClick={handleDownloadClick}>
                 <IoDownloadOutline className="w-6 h-6 mr-2 lg:mr-0  lg:absolute right-12 top-11" />

@@ -114,7 +114,7 @@ export default function Page() {
         onSettingsClick={() => setSettingsOpen(true)}
         showSettingsButton={true}
       />
-      <div className=" flex flex-col w-full items-center bg-teal-600 p-6">
+      <div className="flex flex-col w-full items-center bg-teal-600 p-6 font-poppins">
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setSettingsOpen(false)}

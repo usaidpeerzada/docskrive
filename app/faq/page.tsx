@@ -1,14 +1,13 @@
 "use client";
 import React from "react";
 import Footer from "../components/Footer";
-import Link from "next/link";
 import Navbar from "../components/NavBar";
 
 export default function Page() {
   return (
     <>
       <Navbar onSettingsClick={() => {}} showSettingsButton={false} />
-      <div className="min-h-screen flex justify-center items-center bg-teal-600">
+      <div className="min-h-screen font-poppins flex justify-center items-center bg-teal-600">
         <div className=" px-5 mt-10 mb-10 bg-gray-200 border rounded w-96 md:w-1/2">
           <div className="flex flex-col items-center">
             <h2 className="font-bold text-5xl mt-5 text-slate-700 tracking-tight">

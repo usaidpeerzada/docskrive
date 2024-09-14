@@ -117,7 +117,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     <div
       className={`fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 ${
         isOpen ? "visible opacity-100" : "invisible opacity-0"
-      } transition-all duration-300 ease-in-out`}
+      } transition-all duration-300 ease-in-out font-poppins`}
     >
       {/* Blurred background overlay */}
       <div
