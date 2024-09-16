@@ -56,7 +56,10 @@ export default function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          code,
+          code: code
+            .split("\n")
+            .map((line) => line.trim())
+            .join("\n"),
           language,
           apiKey,
           selectedModel: JSON.parse(selectedModelName),
