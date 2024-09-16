@@ -19,7 +19,7 @@ export default function Page() {
           </div>
           <div className="grid divide-y text-slate-700 divide-neutral-300 max-w-xl mx-auto mt-8">
             <div className="py-5">
-              <details className="group">
+              <details className="group" open={true}>
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
                   <span> What is DocSkrive?</span>
                   <span className="transition group-open:rotate-180">
@@ -41,10 +41,12 @@ export default function Page() {
                 <p className="text-neutral-600 mt-3 visible">
                   DocSkrive is a smart documentation platform that simplifies
                   the creation, management, and sharing of coding documentation.
-                  Utilizing OpenAI and Gemini API, it effortlessly generates
-                  precise documentation from URLs, files, or text. Enhance
-                  clarity in your code with docskrive, making documentation a
-                  seamless part of your development workflow.
+                  Utilizing OpenAI, Anthropic and Gemini API, it effortlessly
+                  generates precise documentation from GitHub URLs, files, or
+                  text. You can also translate code from one language to another
+                  using our advanced code translation feature. Enhance clarity
+                  in your code with docskrive, making documentation a seamless
+                  part of your development workflow.
                 </p>
               </details>
             </div>

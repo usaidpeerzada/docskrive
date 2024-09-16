@@ -125,8 +125,8 @@ export default function Page() {
           isTranslateCodePage={true}
         />
 
-        <h1 className="text-3xl font-bold mb-3">Translate your code to</h1>
-        <div className="flex items-center space-x-4 mt-3">
+        <h1 className="text-3xl font-bold mb-3">Translate code to</h1>
+        <div className="flex flex-wrap lg:flex-nowrap items-center lg:space-x-4 mt-3">
           <ReactSelect
             className="mb-4 w-full max-w-[300px]"
             id={id}
@@ -155,7 +155,7 @@ export default function Page() {
           <div className="w-full md:w-1/2 flex flex-col">
             <h2 className="text-xl font-semibold mb-2">Original Code</h2>
             <textarea
-              className="flex-grow w-full h-full border border-gray-300 rounded-lg p-2 focus:outline-none text-black font-mono focus:ring-2 focus:ring-teal-500 resize-none"
+              className="flex-grow w-full h-80 md:h-full border border-gray-300 rounded-lg p-2 focus:outline-none text-black font-mono focus:ring-2 focus:ring-teal-500 resize-none"
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Paste your code here..."

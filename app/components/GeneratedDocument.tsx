@@ -26,7 +26,11 @@ const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
     }
   }
   return (
-    <div className="flex flex-col bg-light-dashboard text-light-primary dark:text-gray-500 dark:bg-gray-800 rounded-lg shadow-lg p-6 h-full">
+    <div
+      className={`flex flex-col bg-light-dashboard text-light-primary dark:text-gray-500 dark:bg-gray-800 rounded-lg shadow-lg ${
+        isTranslationPage ? "p-2" : "p-6"
+      } `}
+    >
       <div className="flex justify-between">
         <div>
           {isTranslationPage ? null : (

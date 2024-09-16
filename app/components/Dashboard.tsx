@@ -3,16 +3,17 @@ import { useState, useEffect } from "react";
 import GeneratedDocument from "./GeneratedDocument";
 import SettingsModal from "./SettingsModal";
 import Select from "react-select";
-import { SlSettings } from "react-icons/sl";
 import LoadingSpinner from "./LoadingSpinner";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUpload from "./FileUpload";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { IoArrowBack } from "react-icons/io5";
 import { checkIfUrlIsValid, modelOptions } from "../../utils/utils";
+import Toast from "./Toast";
 interface DashboardProps {
   initialData: { document: string };
+  isSettingOpen: boolean;
+  setSettingOpen: (arg: boolean) => void;
 }
 
 export interface SelectedModel {
@@ -23,12 +24,13 @@ export interface SelectedModel {
 const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
 export default function Dashboard({
   initialData,
+  isSettingOpen,
+  setSettingOpen,
 }: DashboardProps): React.ReactNode {
   // const [url, setUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [textCode, setTextCode] = useState("");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<SelectedModel>({
     key: "open-ai",
     value: "gpt-3.5-turbo-1106",
@@ -52,22 +54,39 @@ export default function Dashboard({
       localStorage.getItem("apiKey") !== "" &&
       localStorage.getItem("apiKey");
   }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedModel = localStorage.getItem("selectedModel");
+      if (storedModel) {
+        try {
+          setSelectedModel(JSON.parse(storedModel));
+        } catch (error) {
+          console.error(
+            "Error parsing selected model from localStorage",
+            error
+          );
+        }
+      }
+    }
+  }, []);
+
   async function generateDocument(): Promise<void> {
     if (!apiKey) {
-      setIsSettingsOpen(true);
+      setSettingOpen(true);
       setMessage("Please add an API key in settings.");
     }
     const values = [githubUrl, textCode];
     const filledValues = values.filter((value) => value !== "");
 
     if (filledValues.length > 1) {
-      alert("Please fill only one field at a time.");
+      setError("Please fill only one field at a time.");
       return;
     }
     const urlString = githubUrl;
     if (urlString) {
       if (!checkIfUrlIsValid(urlString)) {
-        alert("Please enter a valid URL.");
+        setError("Please enter a valid URL.");
         return;
       }
     }
@@ -138,20 +157,15 @@ export default function Dashboard({
   }
   const areInputsEmpty = githubUrl.length === 0 && textCode.length === 0;
   return (
-    <motion.main
-      className="main__container"
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 2.5, ease: [0.6, -0.05, 0.01, 0.99] }}
-      exit={{ x: "100%", opacity: 0 }}
-    >
-      <div className="min-h-screen md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-poppins">
+    <>
+      {error && <Toast message={error} onClose={() => setError("")} />}
+      <div className=" md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-poppins">
         <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
           <div className="md:flex lg:flex xl:flex">
             <Link href="/" className="text-3xl font-bold">
               <IoArrowBack className="text-teal-600" />
             </Link>{" "}
-            <div className="absolute right-20">
+            <div className="absolute right-5">
               {isMounted ? (
                 <Select
                   id={id}
@@ -174,16 +188,10 @@ export default function Dashboard({
                 />
               ) : null}
             </div>
-            <button
-              className="absolute right-4 mr-2 bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 hover:border-teal-800 border border-teal-600 dark:border-gray-600 rounded p-2"
-              onClick={() => setIsSettingsOpen(true)}
-            >
-              <SlSettings className="text-white" />
-            </button>
           </div>
           <SettingsModal
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
+            isOpen={isSettingOpen}
+            onClose={() => setSettingOpen(false)}
             message={message}
             setMessage={setMessage}
             darkMode={darkMode}
@@ -228,7 +236,6 @@ export default function Dashboard({
               rows={500}
             />
           </div>
-          {error ? <p className="pb-4 text-red-500">{error}</p> : null}
           <button
             className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-6 rounded-full transition-all duration-300 ease-in-out"
             onClick={generateDocument}
@@ -253,6 +260,6 @@ export default function Dashboard({
           </GeneratedDocument>
         </div>
       </div>
-    </motion.main>
+    </>
   );
 }

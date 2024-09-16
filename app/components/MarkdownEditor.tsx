@@ -36,7 +36,7 @@ export default function MarkdownEditor({
         <div className="wmde-markdown-color"></div>
         <MDEditor
           style={darkMode ? { backgroundColor: "rgb(17 24 39)" } : {}}
-          height={720}
+          height={isTranslationPage ? 500 : 650}
           value={value}
           preview={isTranslationPage ? "preview" : "live"}
           onChange={onChange}

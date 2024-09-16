@@ -51,7 +51,7 @@ const ToggleSwitch = ({ setIsDarkMode, onSubmit }: any) => {
           Light Mode
         </span>
         <span
-          className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${
+          className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium dark:text-gray-800 ${
             isChecked ? "text-primary bg-[#f4f7ff]" : "text-body-color"
           }`}
         >
