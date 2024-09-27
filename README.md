@@ -8,4 +8,4 @@ Docskrive allows users to easily create and format technical documents in markdo
 
 ## Links
 
-To learn more about Docskrive, visit the website [here](https://docskrive.netlify.app).
+To learn more about Docskrive, visit the website [here](https://docskrive.usaid.dev).
