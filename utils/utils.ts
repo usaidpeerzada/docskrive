@@ -6,17 +6,25 @@ function checkIfUrlIsValid(str: string) {
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
       "(\\#[-a-z\\d_]*)?$",
-    "i"
+    "i",
   ); // fragment locator
   return pattern.test(str);
 }
 const modelOptions = [
   { value: "gpt-3.5-turbo-1106", key: "open-ai", label: "GPT-3.5 Turbo" },
-  { value: "gpt-4", key: "open-ai", label: "GPT-4" },
+  { value: "gpt-4o", key: "open-ai", label: "GPT-4o" },
+  { value: "gpt-4o-mini", key: "open-ai", label: "GPT-4o Mini" },
+  { value: "o1-preview", key: "open-ai", label: "GPT-o1 Preview" },
+  { value: "o1-mini", key: "open-ai", label: "GPT-o1 Mini" },
   { value: "gemini-pro", label: "Gemini Pro", key: "google" },
   {
-    value: "claude-3-5-sonnet-20240620",
+    value: "claude-3-5-sonnet-20241022",
     label: "Claude-3-5 Sonnet",
+    key: "anthropic",
+  },
+  {
+    value: "claude-3-5-haiku-latest",
+    label: "Claude-3-5 Haiku",
     key: "anthropic",
   },
 ];
