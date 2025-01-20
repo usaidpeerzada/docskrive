@@ -2,7 +2,8 @@ import axios from "axios";
 import crypto from "crypto";
 
 const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET;
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3003/api";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_DOCSKRIVE_API || "http://localhost:3003/api";
 
 function generateNonce(length: number = 16): string {
   return crypto.randomBytes(length).toString("hex");
