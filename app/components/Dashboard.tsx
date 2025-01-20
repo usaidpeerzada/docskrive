@@ -8,8 +8,13 @@ import MarkdownEditor from "./MarkdownEditor";
 import FileUpload from "./FileUpload";
 import Link from "next/link";
 import { IoArrowBack } from "react-icons/io5";
-import { checkIfUrlIsValid, modelOptions } from "../../utils/utils";
+import {
+  checkIfUrlIsValid,
+  isValidInput,
+  modelOptions,
+} from "../../utils/utils";
 import Toast from "./Toast";
+import { generateDocument } from "@/utils/api";
 interface DashboardProps {
   initialData: { document: string };
   isSettingOpen: boolean;
@@ -21,7 +26,6 @@ export interface SelectedModel {
   value: string;
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
 export default function Dashboard({
   initialData,
   isSettingOpen,
@@ -32,7 +36,7 @@ export default function Dashboard({
   const [textCode, setTextCode] = useState("");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
   const [selectedModel, setSelectedModel] = useState<SelectedModel>({
-    key: "open-ai",
+    key: "openai",
     value: "gpt-3.5-turbo-1106",
   });
   const [message, setMessage] = useState("");
@@ -71,51 +75,39 @@ export default function Dashboard({
     }
   }, []);
 
-  async function generateDocument(): Promise<void> {
+  async function handleGenerateDocument(): Promise<void> {
     if (!apiKey) {
       setSettingOpen(true);
       setMessage("Please add an API key in settings.");
+      return;
     }
-    const values = [githubUrl, textCode];
-    const filledValues = values.filter((value) => value !== "");
-
-    if (filledValues.length > 1) {
+    if (!isValidInput({ githubUrl, textCode })) {
       setError("Please fill only one field at a time.");
       return;
     }
-    const urlString = githubUrl;
-    if (urlString) {
-      if (!checkIfUrlIsValid(urlString)) {
-        setError("Please enter a valid URL.");
-        return;
-      }
+    if (githubUrl && !checkIfUrlIsValid(githubUrl)) {
+      setError("Please enter a valid GitHub URL.");
+      return;
     }
+
     try {
       setIsLoading(true);
-      await fetch(`${apiUrl}/generate-document`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          githubUrl,
-          textCode,
-          apiKey,
-          selectedModel,
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message) {
-            setError(res.message);
-          } else {
-            setGeneratedDocument(res);
-            setError("");
-          }
-        })
-        .catch((err) => console.log("err ", err));
+      setError("");
+
+      const response = await generateDocument({
+        githubUrl,
+        textCode,
+        apiKey,
+        selectedModel,
+      });
+      if (response.message) {
+        setError(response.message);
+        return;
+      }
+      setGeneratedDocument(response);
     } catch (error) {
       console.error("Error generating document:", error);
+      setError("Failed to generate document. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -173,14 +165,21 @@ export default function Dashboard({
                   value={modelOptions.find(
                     (option) => option.value === selectedModel.value
                   )}
-                  onChange={(option) =>
-                    setSelectedModel(
-                      {
-                        key: option?.key as string,
-                        value: option?.value as string,
-                      } || null
-                    )
-                  }
+                  onChange={(option) => {
+                    setSelectedModel({
+                      key: option?.key as string,
+                      value: option?.value as string,
+                    });
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem(
+                        "selectedModel",
+                        JSON.stringify({
+                          key: option?.key as string,
+                          value: option?.value as string,
+                        })
+                      );
+                    }
+                  }}
                   styles={customStyles}
                   theme={customTheme}
                   isSearchable={false}
@@ -238,7 +237,7 @@ export default function Dashboard({
           </div>
           <button
             className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-6 rounded-full transition-all duration-300 ease-in-out"
-            onClick={generateDocument}
+            onClick={handleGenerateDocument}
             disabled={isLoading || areInputsEmpty}
           >
             {isLoading ? (

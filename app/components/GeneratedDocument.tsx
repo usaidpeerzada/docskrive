@@ -37,18 +37,18 @@ const GeneratedDocument: React.FC<GeneratedDocumentProps> = ({
             <h2 className="text-2xl font-bold mb-4">Markdown:</h2>
           )}
         </div>
-        <div>
+        <div className="flex items-center">
           {content && !isTranslationPage ? (
             <>
               <button onClick={handleDownloadClick}>
-                <IoDownloadOutline className="w-6 h-6 mr-2 lg:mr-0  lg:absolute right-12 top-11" />
+                <IoDownloadOutline className="w-6 h-6" />
               </button>
               <EmailShareButton
                 url={""}
                 subject="Check out this Markdown document!"
                 body={content ? content : ""}
               >
-                <IoMailOutline className="w-5 h-5 lg:mt-3 lg:relative right-8" />
+                <IoMailOutline className="w-5 h-5 lg:mt-2" />
               </EmailShareButton>
             </>
           ) : (

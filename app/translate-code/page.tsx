@@ -5,10 +5,11 @@ import SettingsModal from "../components/SettingsModal";
 import Navbar from "../components/NavBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ReactSelect from "react-select";
-import { languages } from "@/utils/utils";
+import { formatCode, languages } from "@/utils/utils";
 import GeneratedDocument from "../components/GeneratedDocument";
 import MarkdownEditor from "../components/MarkdownEditor";
 import Toast from "../components/Toast";
+import { translateCode } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
 const id = Date.now().toString();
@@ -31,57 +32,50 @@ export default function Page() {
       localStorage && localStorage.getItem("selectedModel") !== ""
         ? localStorage.getItem("selectedModel")
         : {
-            key: "open-ai",
+            key: "openai",
             value: "gpt-3.5-turbo-1106",
           };
   }
-  const translateCode = async () => {
-    try {
-      if (!apiKey) {
-        setMessage("Please add an API key in settings.");
 
-        return;
-      }
-      if (!code) {
-        setMessage("Please add input code.");
-        return;
-      } else {
-        setMessage("");
-      }
+  async function handleTranslateCode(): Promise<void> {
+    if (!apiKey) {
+      setMessage("Please add an API key in settings.");
+      return;
+    }
+
+    if (!code) {
+      setMessage("Please add input code.");
+      return;
+    }
+
+    try {
       setLoading(true);
-      console.log(language);
-      await fetch(`${apiUrl}/translate-code`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code: code
-            .split("\n")
-            .map((line) => line.trim())
-            .join("\n"),
-          language,
-          apiKey,
-          selectedModel: JSON.parse(selectedModelName),
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message) {
-            setMessage(res.message);
-          } else {
-            setTranslatedCode(res.document);
-            setMessage("");
-            setLoading(false);
-          }
-        })
-        .catch((err) => console.log("err ", err));
-    } catch (err) {
-      console.error("Error translating: ", err);
+      setMessage("");
+
+      const formattedCode = formatCode(code);
+      const selectedModelConfig = JSON.parse(selectedModelName);
+
+      const response = await translateCode({
+        code: formattedCode,
+        language,
+        apiKey,
+        selectedModel: selectedModelConfig,
+      });
+
+      if (response.message) {
+        setMessage(response.message);
+        return;
+      }
+
+      setTranslatedCode(response.document);
+    } catch (error) {
+      console.error("Error translating code:", error);
+      setMessage("Failed to translate code. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }
+
   const customStyles = {
     option: (provided: any, state: any) => ({
       ...provided,
@@ -144,7 +138,7 @@ export default function Page() {
           />
           <button
             className="bg-teal-700 mb-4 text-white px-4 py-2 rounded-lg hover:bg-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            onClick={translateCode}
+            onClick={handleTranslateCode}
           >
             {loading ? (
               <LoadingSpinner loadingMsg="Translating..." />
@@ -156,7 +150,7 @@ export default function Page() {
         <div className="w-full max-w-8xl flex flex-col md:flex-row gap-6">
           {/* Left Editor */}
           <div className="w-full md:w-1/2 flex flex-col">
-            <h2 className="text-xl font-semibold mb-2">Original Code</h2>
+            <h2 className="text-xl mb-2">Source Code</h2>
             <textarea
               className="flex-grow w-full h-80 md:h-full border border-gray-300 rounded-lg p-2 focus:outline-none text-black font-mono focus:ring-2 focus:ring-teal-500 resize-none"
               value={code}
@@ -167,7 +161,7 @@ export default function Page() {
 
           {/* Right Editor */}
           <div className="w-full md:w-1/2 flex flex-col">
-            <h2 className="text-xl font-semibold mb-2">Translated Code</h2>
+            <h2 className="text-xl mb-2">Translated Code</h2>
             <div className="flex-grow w-full h-full">
               <GeneratedDocument
                 content={translatedCode}
@@ -181,6 +175,9 @@ export default function Page() {
             </div>
           </div>
         </div>
+        <span className="text-sm text-white-300 mt-10">
+          Docskrive can make mistakes. Review the code before using it.
+        </span>
       </div>
     </>
   );

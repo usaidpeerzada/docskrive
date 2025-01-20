@@ -53,6 +53,15 @@ export default function Navbar({
           Translate code
         </Link>
         |
+        {/* <Link
+          href="/text-to-json"
+          className={`hover:underline ${
+            isActive("/text-to-json") ? "underline font-bold" : ""
+          }`}
+        >
+          Text to JSON
+        </Link>
+        | */}
         <Link
           href="/faq"
           className={`hover:underline ${
@@ -105,6 +114,15 @@ export default function Navbar({
           >
             Translate code
           </Link>
+          {/* <Link
+            href="/text-to-json"
+            className={`hover:underline text-2xl ${
+              isActive("/text-to-json") ? "underline font-bold" : ""
+            }`}
+            onClick={toggleMenu}
+          >
+            Translate code
+          </Link> */}
           <Link
             href="/faq"
             className={`hover:underline text-2xl ${

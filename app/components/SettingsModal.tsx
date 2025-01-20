@@ -31,7 +31,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [selectedModel, setSelectedModel] = useState<SelectedModel>({
-    key: "open-ai",
+    key: "openai",
     value: "gpt-3.5-turbo-1106",
   });
   const id = Date.now().toString();
@@ -169,7 +169,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Model Select */}
         {isMounted && isTranslateCodePage && (
-          <div className="mb-6 text-gray-900">
+          <div className="mb-6">
             <ReactSelect
               id={id}
               options={modelOptions}

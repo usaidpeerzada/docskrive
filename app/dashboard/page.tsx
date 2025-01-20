@@ -18,6 +18,11 @@ export default function Page() {
         isSettingOpen={isSettingsOpen}
         setSettingOpen={(val) => setSettingsOpen(val)}
       />
+      <div className="text-center">
+        <span className="text-sm text-white mt-10 pb-5">
+          Docskrive can make mistakes. Review the document before using it.
+        </span>
+      </div>
     </div>
   );
 }
