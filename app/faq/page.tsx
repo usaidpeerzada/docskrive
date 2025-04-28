@@ -74,12 +74,12 @@ export default function Page() {
                       Which AI models are supported?
                     </AccordionTrigger>
                     <AccordionContent>
-                      AITools supports a variety of AI models including OpenAI's
-                      GPT models (GPT-4o, GPT-4o Mini, GPT-o1, GPT-o1 Mini),
-                      Google's Gemini models (Gemini Pro, Gemini-1.5 Flash), and
-                      Anthropic's Claude models (Claude-3.5 Sonnet, Claude-3
-                      Opus, Claude-3.5 Haiku). You can select your preferred
-                      model in the settings.
+                      AITools supports a variety of AI models including
+                      OpenAI&apos;s GPT models (GPT-4o, GPT-4o Mini, GPT-o1,
+                      GPT-o1 Mini), Google&apos;s Gemini models (Gemini Pro,
+                      Gemini-1.5 Flash), and Anthropic&apos;s Claude models
+                      (Claude-3.5 Sonnet, Claude-3 Opus, Claude-3.5 Haiku). You
+                      can select your preferred model in the settings.
                     </AccordionContent>
                   </AccordionItem>
 

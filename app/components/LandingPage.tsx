@@ -142,7 +142,7 @@ const LandingPage = () => {
                   Powered by the Best Models
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  We leverage OpenAI, Anthropic, and Google's latest models
+                  We leverage OpenAI, Anthropic, and Google&apos;s latest models
                   under the hood. No config needed — just results.
                 </p>
               </div>
