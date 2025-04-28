@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import classNames from "classnames";
+import { cn } from "../theme-config";
+import { UploadCloud, X } from "lucide-react";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 
 interface FileUploadProps {
   handleFileChange: (text: string) => void;
@@ -28,90 +31,76 @@ const FileUpload = ({ handleFileChange }: FileUploadProps) => {
   }
 
   return (
-    <div
-      className={classNames({
-        "w-full h-40": true,
-        "p-4 grid place-content-center cursor-pointer": true,
-        "text-gray-900 dark:text-gray-500 rounded-lg": true,
-        border: true,
-        "transition-colors": true,
-        "border-gray-600 bg-gray-200 dark:bg-gray-700": shouldHighlight,
-        "border-gray-600 bg-gray-100 dark:bg-gray-700": !shouldHighlight,
-      })}
-      onDragOver={(e) => {
-        preventDefaultHandler(e);
-        setShouldHighlight(true);
-      }}
-      onDragEnter={(e) => {
-        preventDefaultHandler(e);
-        setShouldHighlight(true);
-      }}
-      onDragLeave={(e) => {
-        preventDefaultHandler(e);
-        setShouldHighlight(false);
-      }}
-      onDrop={(e) => {
-        preventDefaultHandler(e);
-        const files = Array.from(e.dataTransfer.files);
-        convertFileToText(files[0]);
-        setFileList(files);
-        setShouldHighlight(false);
-      }}
+    <Card
+      className={cn(
+        "border-2 border-dashed",
+        shouldHighlight
+          ? "border-primary bg-primary/5"
+          : "border-muted-foreground/25"
+      )}
     >
-      <div className="flex flex-col items-center">
+      <CardContent
+        className="flex flex-col items-center justify-center space-y-2 px-2 py-8 text-xs"
+        onDragOver={(e) => {
+          preventDefaultHandler(e);
+          setShouldHighlight(true);
+        }}
+        onDragEnter={(e) => {
+          preventDefaultHandler(e);
+          setShouldHighlight(true);
+        }}
+        onDragLeave={(e) => {
+          preventDefaultHandler(e);
+          setShouldHighlight(false);
+        }}
+        onDrop={(e) => {
+          preventDefaultHandler(e);
+          const files = Array.from(e.dataTransfer.files);
+          convertFileToText(files[0]);
+          setFileList(files);
+          setShouldHighlight(false);
+        }}
+      >
         {!fileList ? (
           <>
-            {/* <CloudArrowUpIcon className="w-10 h-10" /> */}
-            <svg
-              className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 16"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-              />
-            </svg>
-            <span>
-              <span>Drag your file</span> here
-            </span>
-            <span className="text-gray-400 text-xs">
-              all language files are supported
-            </span>
+            <div className="rounded-full bg-primary/10 p-2 text-primary">
+              <UploadCloud className="h-6 w-6" />
+            </div>
+            <div className="flex flex-col items-center gap-1 text-center">
+              <p className="text-sm font-medium">Drag your file here</p>
+              <p className="text-xs text-muted-foreground">
+                All language files are supported
+              </p>
+            </div>
           </>
         ) : (
           <>
-            <p>File to Upload</p>
-            {fileList.map((file, i) => {
-              return <span key={i}>{file.name}</span>;
-            })}
-            <div className="flex gap-2 mt-2">
-              {/* <button
-                className="bg-gray-500 text-gray-100 px-2 py-1 rounded-md"
-                onClick={() => {
-                  convertFileToText();
-                }}
-              >
-                Generate
-              </button> */}
-              <button
-                className="border border-gray-500 px-2 py-1 rounded-md"
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-sm font-semibold">File to Upload</p>
+              {fileList.map((file, i) => (
+                <span
+                  key={i}
+                  className="text-xs text-muted-foreground flex items-center"
+                >
+                  {file.name}
+                </span>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
                 onClick={() => {
                   setFileList(null);
                 }}
               >
+                <X className="h-4 w-4 mr-2" />
                 Clear
-              </button>
+              </Button>
             </div>
           </>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

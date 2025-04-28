@@ -81,3 +81,33 @@ export const translateCode = async (data: {
     throw error;
   }
 };
+
+export const analyzeCode = async (data: {
+  sourceType: string;
+  github?: string;
+  code?: string;
+  language: string;
+  options: {
+    quality: boolean;
+    security: boolean;
+    performance: boolean;
+    style: boolean;
+    documentation: boolean;
+    depth: string;
+  };
+  apiKey: string;
+  selectedModel: {
+    key: string;
+    value: string;
+  };
+}) => {
+  try {
+    const response = await apiClient.post("/analyze-code", data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 403) {
+      console.error("Security validation failed:", error.response.data);
+    }
+    throw error;
+  }
+};

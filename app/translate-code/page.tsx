@@ -1,33 +1,47 @@
+// app/translate-code/page.tsx
 "use client";
 import React from "react";
-import { useState } from "react";
-import SettingsModal from "../components/SettingsModal";
+import { useState, useEffect } from "react";
 import Navbar from "../components/NavBar";
+import Footer from "../components/Footer";
 import LoadingSpinner from "../components/LoadingSpinner";
-import ReactSelect from "react-select";
 import { formatCode, languages } from "@/utils/utils";
 import GeneratedDocument from "../components/GeneratedDocument";
 import MarkdownEditor from "../components/MarkdownEditor";
 import Toast from "../components/Toast";
 import { translateCode } from "@/utils/api";
+import { Code } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { getApiKey } from "@/utils/storage";
 
-const apiUrl = process.env.NEXT_PUBLIC_DOCSKRIVE_API || "";
-const id = Date.now().toString();
 export default function Page() {
   const [code, setCode] = useState("");
   const [translatedCode, setTranslatedCode] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSettingsOpen, setSettingsOpen] = useState(false);
-  let apiKey: string | any;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => setIsMounted(true), []);
+
+  const apiKey = getApiKey();
   let selectedModelName: object | any;
   if (typeof window !== "undefined") {
-    apiKey =
-      localStorage &&
-      localStorage.getItem("apiKey") !== "" &&
-      localStorage.getItem("apiKey");
-
     selectedModelName =
       localStorage && localStorage.getItem("selectedModel") !== ""
         ? localStorage.getItem("selectedModel")
@@ -76,109 +90,99 @@ export default function Page() {
     }
   }
 
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "rgb(17 94 89)" : "#ffffff",
-      color: state.isSelected ? "#ffffff" : "#000000",
-      padding: "10px",
-    }),
-    control: (provided: any) => ({
-      ...provided,
-      backgroundColor: "#ffffff",
-      borderRadius: "4px",
-      outline: "none",
-      border: "1px",
-      minWidth: "250px", // Ensures it stays full width
-      maxWidth: "250px",
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: "#000000",
-      whiteSpace: "nowrap", // Prevent wrapping text in the selected option
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    }),
-    menuList: (base: any) => ({
-      ...base,
-      width: "250px",
-    }),
-  };
   return (
-    <>
+    <div className="flex min-h-screen flex-col bg-background">
       {message && <Toast message={message} onClose={() => setMessage("")} />}
       <Navbar
-        onSettingsClick={() => setSettingsOpen(true)}
+        onSettingsClick={() => {}}
         showSettingsButton={true}
+        isTranslateCodePage={true}
       />
-      <div className="flex flex-col w-full items-center bg-teal-600 p-6 font-poppins">
-        <SettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setSettingsOpen(false)}
-          message={message}
-          setMessage={setMessage}
-          darkMode={false}
-          setDarkMode={() => {}}
-          isTranslateCodePage={true}
-        />
 
-        <h1 className="text-3xl font-bold mb-3">Translate code to</h1>
-        <div className="flex flex-wrap lg:flex-nowrap items-center lg:space-x-4 mt-3">
-          <ReactSelect
-            className="mb-4 w-full max-w-[300px]"
-            id={id}
-            options={languages}
-            value={languages.find((option) => option.value === language)}
-            onChange={(option) => {
-              setLanguage(option?.value as string);
-            }}
-            styles={customStyles}
-            isSearchable={false}
-            defaultValue={languages[0]}
-          />
-          <button
-            className="bg-teal-700 mb-4 text-white px-4 py-2 rounded-lg hover:bg-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            onClick={handleTranslateCode}
-          >
-            {loading ? (
-              <LoadingSpinner loadingMsg="Translating..." />
-            ) : (
-              "Translate"
-            )}
-          </button>
-        </div>
-        <div className="w-full max-w-8xl flex flex-col md:flex-row gap-6">
-          {/* Left Editor */}
-          <div className="w-full md:w-1/2 flex flex-col">
-            <h2 className="text-xl mb-2">Source Code</h2>
-            <textarea
-              className="flex-grow w-full h-80 md:h-full border border-gray-300 rounded-lg p-2 focus:outline-none text-black font-mono focus:ring-2 focus:ring-teal-500 resize-none"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Paste your code here..."
-            />
+      <div className="container py-6">
+        <div className="max-w-3xl flex">
+          <div className="mt-1 mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Code className="h-6 w-6 text-primary" />
           </div>
-
-          {/* Right Editor */}
-          <div className="w-full md:w-1/2 flex flex-col">
-            <h2 className="text-xl mb-2">Translated Code</h2>
-            <div className="flex-grow w-full h-full">
-              <GeneratedDocument
-                content={translatedCode}
-                isTranslationPage={true}
-              >
-                <MarkdownEditor
-                  initialData={{ content: translatedCode }}
-                  isTranslationPage={true}
-                />
-              </GeneratedDocument>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+              Translate Code
+            </h1>
+            <p className="text-muted-foreground">
+              Translate code between different programming languages using AI.
+            </p>
           </div>
         </div>
-        <span className="text-sm text-white-300 mt-10">
-          Docskrive can make mistakes. Review the code before using it.
-        </span>
       </div>
-    </>
+
+      <main className="flex-1 py-4">
+        <div className="container">
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <span>Translate to:</span>
+              {isMounted && (
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {languages.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <Button onClick={handleTranslateCode} disabled={loading}>
+              {loading ? (
+                <LoadingSpinner loadingMsg="Translating..." />
+              ) : (
+                "Translate"
+              )}
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Source Code</CardTitle>
+                <CardDescription>
+                  Enter or paste the code you want to translate
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  placeholder="Paste your code here..."
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="min-h-[400px] font-mono"
+                />
+              </CardContent>
+            </Card>
+
+            <GeneratedDocument
+              content={translatedCode}
+              isTranslationPage={true}
+            >
+              <MarkdownEditor
+                initialData={{ content: translatedCode }}
+                isTranslationPage={true}
+              />
+            </GeneratedDocument>
+          </div>
+
+          <div className="text-center mt-6">
+            <p className="text-sm text-muted-foreground">
+              Review the translated code before using it in production.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 }

@@ -1,13 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import GeneratedDocument from "./GeneratedDocument";
-import SettingsModal from "./SettingsModal";
-import Select from "react-select";
 import LoadingSpinner from "./LoadingSpinner";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUpload from "./FileUpload";
 import Link from "next/link";
-import { IoArrowBack } from "react-icons/io5";
+import { ArrowLeft } from "lucide-react";
 import {
   checkIfUrlIsValid,
   isValidInput,
@@ -15,6 +13,20 @@ import {
 } from "../../utils/utils";
 import Toast from "./Toast";
 import { generateDocument } from "@/utils/api";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { getApiKey } from "@/utils/storage";
+
 interface DashboardProps {
   initialData: { document: string };
   isSettingOpen: boolean;
@@ -31,7 +43,6 @@ export default function Dashboard({
   isSettingOpen,
   setSettingOpen,
 }: DashboardProps): React.ReactNode {
-  // const [url, setUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [textCode, setTextCode] = useState("");
   const [generatedDocument, setGeneratedDocument] = useState(initialData);
@@ -43,21 +54,11 @@ export default function Dashboard({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-
-  // fix for warning related to select dropdown:
-  // Must be deleted once
-  // https://github.com/JedWatson/react-select/issues/5459 is fixed.
-  const id = Date.now().toString();
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => setIsMounted(true), []);
 
-  let apiKey: string | any;
-  if (typeof window !== "undefined") {
-    apiKey =
-      localStorage &&
-      localStorage.getItem("apiKey") !== "" &&
-      localStorage.getItem("apiKey");
-  }
+  const apiKey = getApiKey();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -113,141 +114,102 @@ export default function Dashboard({
     }
   }
 
-  const customTheme = (theme: any) => ({
-    ...theme,
-    spacing: {
-      controlHeight: 34.5,
-      menuGutter: 10,
-      baseUnit: 2,
-    },
-  });
+  const areInputsEmpty = githubUrl.length === 0 && textCode.length === 0;
 
-  const customStyles = {
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "rgb(17 94 89)" : "#ffffff",
-      color: state.isSelected ? "#ffffff" : "#000000",
-      padding: "10px",
-    }),
-    control: (provided: any) => ({
-      ...provided,
-      backgroundColor: "rgb(13 148 136)",
-      borderRadius: "4px",
-      outline: "none",
-      border: "1px",
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: "#ffffff",
-    }),
-    menuList: (base: any) => ({
-      ...base,
-    }),
-  };
   function handleFileChange(text: string) {
     setTextCode(text);
   }
-  const areInputsEmpty = githubUrl.length === 0 && textCode.length === 0;
+
   return (
     <>
       {error && <Toast message={error} onClose={() => setError("")} />}
-      <div className=" md:pr-6 md:pl-6 lg:pr-6 lg:pl-6 pb-6 pt-3 flex flex-wrap text-white font-poppins">
-        <div className="p-6 bg-light-dashboard text-light-primary dark:bg-gray-800 dark:text-gray-500 rounded-lg shadow-lg max-w-md w-full relative">
-          <div className="md:flex lg:flex xl:flex">
-            <Link href="/" className="text-3xl font-bold">
-              <IoArrowBack className="text-teal-600" />
-            </Link>{" "}
-            <div className="absolute right-5">
-              {isMounted ? (
-                <Select
-                  id={id}
-                  options={modelOptions}
-                  value={modelOptions.find(
-                    (option) => option.value === selectedModel.value
-                  )}
-                  onChange={(option) => {
-                    setSelectedModel({
-                      key: option?.key as string,
-                      value: option?.value as string,
-                    });
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem(
-                        "selectedModel",
-                        JSON.stringify({
-                          key: option?.key as string,
-                          value: option?.value as string,
-                        })
-                      );
-                    }
-                  }}
-                  styles={customStyles}
-                  theme={customTheme}
-                  isSearchable={false}
-                  defaultValue={modelOptions[0]}
-                />
-              ) : null}
+      <div className="container m-auto  grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-1">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <div className="flex items-center">
+              <Button variant="ghost" size="icon" asChild className="mr-2">
+                <Link href="/">
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="sr-only">Back to home</span>
+                </Link>
+              </Button>
+              {/* <CardTitle>Create Documentation</CardTitle> */}
             </div>
-          </div>
-          <SettingsModal
-            isOpen={isSettingOpen}
-            onClose={() => setSettingOpen(false)}
-            message={message}
-            setMessage={setMessage}
-            darkMode={darkMode}
-            setDarkMode={setDarkMode}
-            isTranslateCodePage={false}
-          />
-          {/* <div className="mb-4 mt-4">
-            <label className="block text-sm font-medium mb-2">URL:</label>
-            <input
-              type="text"
-              className="p-2 w-full bg-gray-100 dark:bg-gray-700 border border-gray-600 rounded focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
-              placeholder="Enter a url of a website to see what it does"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-          </div> */}
-          {/* <div className="mb-2 flex items-center">
-            <hr className="flex-1 border-t border-gray-600" />
-            <span className="mx-4 text-sm text-gray-500">or</span>
-            <hr className="flex-1 border-t border-gray-600" />
-          </div> */}
-          <div className="mt-4 mb-4">
-            <label className="block text-sm font-medium mb-2">
-              GitHub file URL:
-            </label>
-            <input
-              type="text"
-              className="p-2 w-full bg-gray-100 dark:bg-gray-700 border border-gray-600 rounded focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
-              placeholder="Enter file url"
-              value={githubUrl}
-              onChange={(e) => setGithubUrl(e.target.value)}
-            />
-          </div>
-          <FileUpload handleFileChange={handleFileChange} />
-          <div className="mb-4 mt-4">
-            <label className="block text-sm font-medium mb-2">Code:</label>
-            <textarea
-              className="p-2 w-full h-64 bg-gray-100 dark:bg-gray-700 border border-gray-600 rounded focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
-              placeholder="Paste your code here..."
-              value={textCode}
-              onChange={(e) => setTextCode(e.target.value)}
-              rows={500}
-            />
-          </div>
-          <button
-            className="bg-teal-600 dark:bg-gray-700 hover:bg-teal-800 text-gray-100 py-2 px-6 rounded-full transition-all duration-300 ease-in-out"
-            onClick={handleGenerateDocument}
-            disabled={isLoading || areInputsEmpty}
-          >
-            {isLoading ? (
-              <LoadingSpinner loadingMsg="Generating" />
-            ) : (
-              "Generate"
+            {isMounted && (
+              <Select
+                value={selectedModel.value}
+                onValueChange={(value) => {
+                  const option = modelOptions.find(
+                    (opt) => opt.value === value
+                  );
+                  if (option) {
+                    const newModel = {
+                      key: option.key,
+                      value: option.value,
+                    };
+                    setSelectedModel(newModel);
+                    localStorage.setItem(
+                      "selectedModel",
+                      JSON.stringify(newModel)
+                    );
+                  }
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {modelOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
-          </button>
-        </div>
-        <div className="flex-1 mt-10 md:mt-0 lg:mt-0 xl:mt-0 md:pl-6 lg:pl-6">
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="github-url">GitHub file URL:</Label>
+              <Input
+                id="github-url"
+                type="text"
+                placeholder="Enter file url"
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+              />
+            </div>
+
+            <FileUpload handleFileChange={handleFileChange} />
+
+            <div className="space-y-2">
+              <Label htmlFor="code">Code:</Label>
+              <Textarea
+                id="code"
+                placeholder="Paste your code here..."
+                value={textCode}
+                onChange={(e) => setTextCode(e.target.value)}
+                rows={10}
+                className="min-h-[200px] font-mono"
+              />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button
+              onClick={handleGenerateDocument}
+              disabled={isLoading || areInputsEmpty}
+              className="w-full"
+            >
+              {isLoading ? (
+                <LoadingSpinner loadingMsg="Generating" />
+              ) : (
+                "Generate"
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <div className="md:col-span-2">
           <GeneratedDocument
             isTranslationPage={false}
             content={generatedDocument?.document}

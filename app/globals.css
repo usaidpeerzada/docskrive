@@ -1,33 +1,61 @@
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import '@fontsource/poppins';
-@import '@fontsource/poppins/400.css'; /* Regular */
-@import '@fontsource/poppins/500.css'; /* Medium */
-@import '@fontsource/poppins/600.css'; /* Semi-bold */
+@import '@fontsource/poppins/400.css';
+/* Regular */
+@import '@fontsource/poppins/500.css';
+/* Medium */
+@import '@fontsource/poppins/600.css';
+/* Semi-bold */
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
+  /* The CSS variables will be injected dynamically by ThemeProvider */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
+/* Custom styles */
 body {
-  color: rgb(var(--foreground-rgb));
-  background-color: rgb(13 148 136) !important;
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Animation for shadcn/ui components */
+@layer utilities {
+  .animation-delay-75 {
+    animation-delay: 75ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.5s ease forwards;
 }

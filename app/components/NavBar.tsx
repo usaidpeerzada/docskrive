@@ -1,139 +1,137 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // For getting current path
-import { SlSettings } from "react-icons/sl";
-import { HiMenu, HiX } from "react-icons/hi";
+import { usePathname } from "next/navigation";
+import {
+  Menu,
+  FileText,
+  Code,
+  Home,
+  HelpCircle,
+  FileCode2,
+  BotIcon,
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { Button } from "./ui/button";
+import { cn } from "../theme-config";
+import SettingsLauncher from "./SettingsLauncher";
 
 export default function Navbar({
   onSettingsClick,
   showSettingsButton,
+  isTranslateCodePage = false,
 }: {
   onSettingsClick: () => void;
   showSettingsButton: boolean;
+  isTranslateCodePage?: boolean;
 }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname(); // Get current route
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   const isActive = (path: string) => pathname === path;
 
+  // Navigation items for both desktop and mobile
+  const navItems = [
+    { href: "/", label: "Home", icon: <Home className="h-4 w-4 mr-2" /> },
+    {
+      href: "/dashboard",
+      label: "Document Your Code",
+      icon: <FileText className="h-4 w-4 mr-2" />,
+    },
+    {
+      href: "/code-review",
+      label: "Code Review",
+      icon: <FileCode2 className="h-4 w-4 mr-2" />,
+    },
+    {
+      href: "/translate-code",
+      label: "Translate Code",
+      icon: <Code className="h-4 w-4 mr-2" />,
+    },
+    {
+      href: "/faq",
+      label: "FAQ",
+      icon: <HelpCircle className="h-4 w-4 mr-2" />,
+    },
+  ];
+
   return (
-    <nav className="w-full bg-teal-700 text-white p-4 flex items-center justify-between font-poppins">
-      <button className="md:hidden text-white text-2xl" onClick={toggleMenu}>
-        {isMenuOpen ? <HiX /> : <HiMenu />}
-      </button>
-      <div className="hidden md:flex md:items-center gap-4">
-        <Link
-          href="/"
-          className={`hover:underline ${
-            isActive("/") ? "underline font-bold" : ""
-          }`}
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        {/* Mobile menu trigger */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[250px] sm:w-[300px]">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-4 mt-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center px-2 py-1.5 text-sm rounded-md transition-colors hover:bg-accent hover:text-accent-foreground",
+                    isActive(item.href)
+                      ? "bg-accent text-accent-foreground font-medium"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
+
+        {/* Desktop navigation - hidden on homepage, visible elsewhere */}
+        {/* {!isHomePage && (
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm transition-colors hover:text-foreground/80",
+                  isActive(item.href)
+                    ? "text-foreground font-medium"
+                    : "text-foreground/60"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )} */}
+
+        {/* AITools centered branding */}
+        <div
+          className={cn(
+            "flex justify-center",
+            isHomePage ? "flex-1" : "mx-auto"
+          )}
         >
-          Home
-        </Link>
-        |
-        <Link
-          href="/dashboard"
-          className={`hover:underline ${
-            isActive("/dashboard") ? "underline font-bold" : ""
-          }`}
-        >
-          Create code documentation
-        </Link>
-        |
-        <Link
-          href="/translate-code"
-          className={`hover:underline ${
-            isActive("/translate-code") ? "underline font-bold" : ""
-          }`}
-        >
-          Translate code
-        </Link>
-        |
-        {/* <Link
-          href="/text-to-json"
-          className={`hover:underline ${
-            isActive("/text-to-json") ? "underline font-bold" : ""
-          }`}
-        >
-          Text to JSON
-        </Link>
-        | */}
-        <Link
-          href="/faq"
-          className={`hover:underline ${
-            isActive("/faq") ? "underline font-bold" : ""
-          }`}
-        >
-          FAQ
-        </Link>
-      </div>
-      {showSettingsButton ? (
-        <button
-          className="ml-auto bg-white dark:bg-gray-700 hover:bg-gray-100 hover:border-gray-100 border border-gray-100 dark:border-gray-600 rounded p-2"
-          onClick={onSettingsClick}
-        >
-          <SlSettings className="text-teal-700" />
-        </button>
-      ) : null}
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-teal-700 text-white z-50 flex flex-col items-center justify-center space-y-4 md:hidden">
-          <button
-            className="absolute top-4 right-4 text-white text-2xl"
-            onClick={toggleMenu}
-          >
-            <HiX />
-          </button>
-          <Link
-            href="/"
-            className={`hover:underline text-2xl ${
-              isActive("/") ? "underline font-bold" : ""
-            }`}
-            onClick={toggleMenu}
-          >
-            Home
-          </Link>
-          <Link
-            href="/dashboard"
-            className={`hover:underline text-2xl ${
-              isActive("/dashboard") ? "underline font-bold" : ""
-            }`}
-            onClick={toggleMenu}
-          >
-            Code documentation
-          </Link>
-          <Link
-            href="/translate-code"
-            className={`hover:underline text-2xl ${
-              isActive("/translate-code") ? "underline font-bold" : ""
-            }`}
-            onClick={toggleMenu}
-          >
-            Translate code
-          </Link>
-          {/* <Link
-            href="/text-to-json"
-            className={`hover:underline text-2xl ${
-              isActive("/text-to-json") ? "underline font-bold" : ""
-            }`}
-            onClick={toggleMenu}
-          >
-            Translate code
-          </Link> */}
-          <Link
-            href="/faq"
-            className={`hover:underline text-2xl ${
-              isActive("/faq") ? "underline font-bold" : ""
-            }`}
-            onClick={toggleMenu}
-          >
-            FAQ
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+            <span>AITools</span>
           </Link>
         </div>
-      )}
-    </nav>
+
+        {/* Right side - Settings button */}
+        <div className="flex justify-end">
+          <SettingsLauncher isTranslateCodePage={isTranslateCodePage} />
+        </div>
+      </div>
+    </header>
   );
 }
