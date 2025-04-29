@@ -84,7 +84,7 @@ export const translateCode = async (data: {
 
 export const analyzeCode = async (data: {
   sourceType: string;
-  github?: string;
+  pullRequestUrl?: string;
   code?: string;
   language: string;
   options: {

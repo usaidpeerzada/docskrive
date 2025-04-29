@@ -14,14 +14,22 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
-import { Loader2, Github, Code, Upload } from "lucide-react";
+import {
+  Loader2,
+  GitBranch,
+  Code,
+  Upload,
+  Github,
+  InfoIcon,
+  Image,
+  Folder,
+} from "lucide-react";
 import { languages } from "@/utils/utils";
 import FileUpload from "../FileUpload";
 import { checkIfUrlIsValid } from "@/utils/utils";
 import { analyzeCode as analyzeCodeAPI } from "@/utils/api";
 import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
-import { getApiKey } from "@/utils/storage";
 
 interface CodeInputProps {
   onAnalysisStart: () => void;
@@ -37,7 +45,7 @@ export default function CodeInput({
   isAnalyzing,
 }: CodeInputProps) {
   const [inputType, setInputType] = useState("code");
-  const [githubUrl, setGithubUrl] = useState("");
+  const [pullRequestUrl, setPullRequestUrl] = useState("");
   const [codeText, setCodeText] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [analysisOptions, setAnalysisOptions] = useState({
@@ -68,13 +76,41 @@ export default function CodeInput({
     });
   };
 
+  const isPullRequestUrlValid = (url: string): boolean => {
+    // Check for GitHub pull requests
+    if (url.match(/github\.com\/[^\/]+\/[^\/]+\/pull\/\d+/)) return true;
+
+    // Check for GitLab merge requests
+    if (url.match(/gitlab\.com\/[^\/]+\/[^\/]+\/-\/merge_requests\/\d+/))
+      return true;
+
+    // Check for Azure DevOps pull requests
+    if (
+      url.match(
+        /dev\.azure\.com\/[^\/]+\/[^\/]+\/_git\/[^\/]+\/pullrequest\/\d+/
+      )
+    )
+      return true;
+    if (
+      url.match(
+        /[^\/]+\.visualstudio\.com\/[^\/]+\/_git\/[^\/]+\/pullrequest\/\d+/
+      )
+    )
+      return true;
+
+    // Check for Gerrit code reviews
+    if (url.match(/[^\/]+\/c\/[^\/]+\/\+\/\d+/)) return true;
+
+    return false;
+  };
+
   const handleAnalyze = async () => {
     // Validate input
     if (
-      inputType === "github" &&
-      (!githubUrl || !checkIfUrlIsValid(githubUrl))
+      inputType === "pullrequest" &&
+      (!pullRequestUrl || !isPullRequestUrlValid(pullRequestUrl))
     ) {
-      onAnalysisError("Please enter a valid GitHub URL");
+      onAnalysisError("Please enter a valid pull request URL");
       return;
     }
 
@@ -97,16 +133,22 @@ export default function CodeInput({
       return;
     }
 
-    const apiKey = getApiKey();
-    let selectedModel: object | any;
+    let apiKey: string | null = null;
+    let selectedModel: any = null;
+
     if (typeof window !== "undefined") {
-      selectedModel =
-        localStorage && localStorage.getItem("selectedModel") !== ""
-          ? JSON.parse(localStorage.getItem("selectedModel") || "{}")
-          : {
-              key: "openai",
-              value: "gpt-3.5-turbo-1106",
-            };
+      apiKey = localStorage.getItem("apiKey");
+      const storedModel = localStorage.getItem("selectedModel");
+      if (storedModel) {
+        try {
+          selectedModel = JSON.parse(storedModel);
+        } catch (e) {
+          console.error("Error parsing stored model:", e);
+          selectedModel = { key: "openai", value: "gpt-4o" };
+        }
+      } else {
+        selectedModel = { key: "openai", value: "gpt-4o" };
+      }
     }
 
     if (!apiKey) {
@@ -120,7 +162,8 @@ export default function CodeInput({
       // Prepare data for API
       const analysisData = {
         sourceType: inputType,
-        github: inputType === "github" ? githubUrl : undefined,
+        pullRequestUrl:
+          inputType === "pullrequest" ? pullRequestUrl : undefined,
         code: inputType === "code" ? codeText : undefined,
         language,
         options: analysisOptions,
@@ -149,9 +192,9 @@ export default function CodeInput({
             <Code className="h-4 w-4" />
             Code
           </TabsTrigger>
-          <TabsTrigger value="github" className="flex items-center gap-2">
-            <Github className="h-4 w-4" />
-            GitHub
+          <TabsTrigger value="pullrequest" className="flex items-center gap-2">
+            <GitBranch className="h-4 w-4" />
+            Pull Request
           </TabsTrigger>
         </TabsList>
 
@@ -175,7 +218,7 @@ export default function CodeInput({
                   id="code-input"
                   placeholder="Paste your code here..."
                   className="font-mono text-sm h-60"
-                  onChange={(e) => setCodeText(e.target.value)}
+                  onChange={(e: any) => setCodeText(e.target.value)}
                   value={codeText}
                   disabled={isAnalyzing}
                 />
@@ -183,19 +226,46 @@ export default function CodeInput({
             </div>
           </TabsContent>
 
-          <TabsContent value="github" className="space-y-4 mt-0">
+          <TabsContent value="pullrequest" className="space-y-4 mt-0">
             <div className="space-y-2">
-              <Label htmlFor="github-url">GitHub file URL:</Label>
+              <Label htmlFor="pr-url">Pull Request URL:</Label>
               <Input
-                id="github-url"
-                placeholder="https://github.com/username/repo/blob/main/path/to/file.js"
-                onChange={(e) => setGithubUrl(e.target.value)}
-                value={githubUrl}
+                id="pr-url"
+                placeholder="https://github.com/username/repo/pull/123"
+                onChange={(e: any) => setPullRequestUrl(e.target.value)}
+                value={pullRequestUrl}
                 disabled={isAnalyzing}
               />
               <p className="text-xs text-muted-foreground">
-                Enter the URL of a specific file on GitHub
+                Supports GitHub, GitLab, Azure DevOps, and Gerrit pull requests
               </p>
+            </div>
+
+            <div className="mt-4 bg-muted/20 p-4 rounded-md">
+              <div className="flex items-center space-x-2 mb-2">
+                <InfoIcon className="h-4 w-4 text-blue-500" />
+                <h3 className="text-sm font-medium">Supported platforms:</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center space-x-2">
+                  <Github className="h-4 w-4" />
+                  <span>GitHub: /username/repo/pull/123</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Image className="h-4 w-4" />
+                  <span>GitLab: /username/repo/-/merge_requests/123</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Folder className="h-4 w-4" />
+                  <span>
+                    Azure DevOps: /org/project/_git/repo/pullrequest/123
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Code className="h-4 w-4" />
+                  <span>Gerrit: /c/project/+/123</span>
+                </div>
+              </div>
             </div>
           </TabsContent>
 

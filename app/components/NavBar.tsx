@@ -124,6 +124,16 @@ export default function Navbar({
         >
           <Link href="/" className="flex items-center gap-2 text-xl font-bold">
             <span>AITools</span>
+            <sup
+              style={{
+                fontSize: "8px",
+                position: "relative",
+                bottom: 20,
+                right: 8,
+              }}
+            >
+              beta
+            </sup>
           </Link>
         </div>
 

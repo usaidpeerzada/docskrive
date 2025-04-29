@@ -6,7 +6,7 @@ import CodeReviewDashboard from "../components/code-review/CodeReviewDashboard";
 import CodeInput from "../components/code-review/CodeInput";
 import Footer from "../components/Footer";
 import { Toaster } from "../components/ui/toaster";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/app/hooks/use-toast";
 import { Button } from "../components/ui/button";
 import { ArrowLeft, FileCode2 } from "lucide-react";
 
