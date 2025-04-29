@@ -29,7 +29,7 @@ const LandingPage = () => {
       description:
         "Auto-generate stunning, developer-friendly docs from any codebase. GitHub integration built-in.",
       icon: <FileText className="h-10 w-10 text-primary" />,
-      link: "/dashboard",
+      link: "/document-your-code",
       buttonText: "Get Started",
     },
     {

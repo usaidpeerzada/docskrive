@@ -39,7 +39,7 @@ export default function Navbar({
   const navItems = [
     { href: "/", label: "Home", icon: <Home className="h-4 w-4 mr-2" /> },
     {
-      href: "/dashboard",
+      href: "/document-your-code",
       label: "Document Your Code",
       icon: <FileText className="h-4 w-4 mr-2" />,
     },
