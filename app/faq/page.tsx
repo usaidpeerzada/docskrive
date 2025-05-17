@@ -20,7 +20,7 @@ import {
 export default function Page() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Navbar onSettingsClick={() => {}} showSettingsButton={false} />
+      <Navbar />
 
       <div className="container py-6">
         <header className="mb-6 text-center">
@@ -46,16 +46,16 @@ export default function Page() {
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="item-1">
-                    <AccordionTrigger>What is AITools?</AccordionTrigger>
+                    <AccordionTrigger>What is BuddAI?</AccordionTrigger>
                     <AccordionContent>
-                      AITools is a smart documentation platform that simplifies
+                      BuddAI is a smart documentation platform that simplifies
                       the creation, management, and sharing of coding
                       documentation. Utilizing OpenAI, Anthropic and Gemini API,
                       it effortlessly generates precise documentation from
                       GitHub URLs, files, or text. You can also translate code
                       from one language to another using our advanced code
                       translation feature. Enhance clarity in your code with
-                      AITools, making documentation a seamless part of your
+                      BuddAI, making documentation a seamless part of your
                       development workflow.
                     </AccordionContent>
                   </AccordionItem>
@@ -63,7 +63,7 @@ export default function Page() {
                   <AccordionItem value="item-2">
                     <AccordionTrigger>Are my API keys safe?</AccordionTrigger>
                     <AccordionContent>
-                      Yes, AITools does not save your API keys anywhere on our
+                      Yes, BuddAI does not save your API keys anywhere on our
                       servers. The keys are stored in your browser&apos;s local
                       storage, you can remove them anytime you want to.
                     </AccordionContent>
@@ -74,7 +74,7 @@ export default function Page() {
                       Which AI models are supported?
                     </AccordionTrigger>
                     <AccordionContent>
-                      AITools supports a variety of AI models including
+                      BuddAI supports a variety of AI models including
                       OpenAI&apos;s GPT models (GPT-4o, GPT-4o Mini, GPT-o1,
                       GPT-o1 Mini), Google&apos;s Gemini models (Gemini Pro,
                       Gemini-1.5 Flash), and Anthropic&apos;s Claude models

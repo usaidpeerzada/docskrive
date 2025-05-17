@@ -93,11 +93,7 @@ export default function Page() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {message && <Toast message={message} onClose={() => setMessage("")} />}
-      <Navbar
-        onSettingsClick={() => {}}
-        showSettingsButton={true}
-        isTranslateCodePage={true}
-      />
+      <Navbar />
 
       <div className="container py-6">
         <div className="max-w-3xl flex">

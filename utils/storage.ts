@@ -1,3 +1,5 @@
+import { LocalModelConfig } from "./utils";
+
 /**
  * Gets the API key from either session storage or local storage
  * Prioritizes session storage if available (for security)
@@ -49,4 +51,48 @@ export function getStoragePreference(): boolean {
   if (typeof window === "undefined") return false;
 
   return localStorage.getItem("useSessionStorage") === "true";
+}
+
+/**
+ * Gets the preferred model type (api or local)
+ */
+export function getModelType(): "api" | "local" {
+  if (typeof window === "undefined") return "api";
+
+  return localStorage.getItem("modelType") === "local" ? "local" : "api";
+}
+
+/**
+ * Saves the preferred model type
+ */
+export function saveModelType(type: "api" | "local"): void {
+  if (typeof window === "undefined") return;
+
+  localStorage.setItem("modelType", type);
+}
+
+/**
+ * Gets the local model configuration
+ */
+export function getLocalModelConfig(): LocalModelConfig | null {
+  if (typeof window === "undefined") return null;
+
+  const config = localStorage.getItem("localModelConfig");
+  if (!config) return null;
+
+  try {
+    return JSON.parse(config) as LocalModelConfig;
+  } catch (error) {
+    console.error("Error parsing local model config:", error);
+    return null;
+  }
+}
+
+/**
+ * Saves the local model configuration
+ */
+export function saveLocalModelConfig(config: LocalModelConfig): void {
+  if (typeof window === "undefined") return;
+
+  localStorage.setItem("localModelConfig", JSON.stringify(config));
 }

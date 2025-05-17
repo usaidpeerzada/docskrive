@@ -116,3 +116,11 @@ function formatCode(code: string): string {
 }
 
 export { checkIfUrlIsValid, modelOptions, languages, isValidInput, formatCode };
+
+export type LocalModelConfig = {
+  serverType: string;
+  endpoint: string;
+  modelName: string;
+  temperature?: number;
+  contextLength?: number;
+};

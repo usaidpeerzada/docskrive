@@ -21,7 +21,7 @@ import {
   FileText,
 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Card, CardContent } from "../ui/card";
 
 interface Issue {

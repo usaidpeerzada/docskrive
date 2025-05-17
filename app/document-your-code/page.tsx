@@ -12,11 +12,7 @@ export default function Page() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Navbar
-        onSettingsClick={() => {}}
-        showSettingsButton={true}
-        isTranslateCodePage={false}
-      />
+      <Navbar />
 
       <div className="container py-6">
         <div className="max-w-3xl flex">

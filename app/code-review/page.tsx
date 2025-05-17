@@ -44,10 +44,7 @@ export default function CodeReviewPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar
-        onSettingsClick={() => setSettingsOpen(true)}
-        showSettingsButton={true}
-      />
+      <Navbar />
 
       <div className="container py-6">
         <div className="max-w-2xl ml-28 flex">

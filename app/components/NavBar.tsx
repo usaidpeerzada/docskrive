@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,16 +22,9 @@ import {
 import { Button } from "./ui/button";
 import { cn } from "../theme-config";
 import SettingsLauncher from "./SettingsLauncher";
+import ModelSelectorDisplay from "./ModelSelectorDisplay";
 
-export default function Navbar({
-  onSettingsClick,
-  showSettingsButton,
-  isTranslateCodePage = false,
-}: {
-  onSettingsClick: () => void;
-  showSettingsButton: boolean;
-  isTranslateCodePage?: boolean;
-}) {
+export default function Navbar() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
@@ -123,7 +118,7 @@ export default function Navbar({
           )}
         >
           <Link href="/" className="flex items-center gap-2 text-xl font-bold">
-            <span>AITools</span>
+            <span>BuddAI</span>
             <sup
               style={{
                 fontSize: "8px",
@@ -138,8 +133,9 @@ export default function Navbar({
         </div>
 
         {/* Right side - Settings button */}
-        <div className="flex justify-end">
-          <SettingsLauncher isTranslateCodePage={isTranslateCodePage} />
+        <div className="flex justify-end items-center gap-2">
+          {/* <ModelSelectorDisplay /> */}
+          <SettingsLauncher />
         </div>
       </div>
     </header>

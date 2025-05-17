@@ -7,7 +7,7 @@ import { ThemeProvider } from "../app/components/ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AITools",
+  title: "BuddAI",
   description: "AI-powered code documentation and translation tools",
 };
 
